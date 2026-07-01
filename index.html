@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TYATT Pesquisa — Pesquisa offline, sem internet</title>
+<style>
+  :root{
+    --verde:#2f7d33; --verde-escuro:#256428; --fundo:#fafafa;
+    --texto:#1a1a1a; --cinza:#666; --borda:#ddd; --marca:#fff3a8;
+  }
+  *{box-sizing:border-box}
+  body{font-family:system-ui,Segoe UI,sans-serif;margin:0;background:var(--fundo);color:var(--texto);line-height:1.7}
+
+  header{background:var(--verde);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+  header .logo{font-size:1.3em;font-weight:700;letter-spacing:.5px;cursor:pointer}
+  header .offline{margin-left:auto;font-size:.8em;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:12px}
+
+  .ecra-inicial{text-align:center;padding:10vh 20px 0}
+  .ecra-inicial h1{color:var(--verde);font-size:2.6em;margin:0 0 4px;letter-spacing:1px}
+  .ecra-inicial p{color:var(--cinza);margin:0 0 28px}
+
+  .caixa-pesquisa{max-width:640px;margin:0 auto;position:relative}
+  .caixa-pesquisa input{
+    width:100%;padding:14px 20px;font-size:1.1em;border:2px solid var(--borda);
+    border-radius:28px;outline:none;background:#fff
+  }
+  .caixa-pesquisa input:focus{border-color:var(--verde);box-shadow:0 2px 10px rgba(47,125,51,.15)}
+
+  main{max-width:760px;margin:0 auto;padding:20px}
+
+  .resultado{background:#fff;border:1px solid var(--borda);border-radius:10px;padding:14px 18px;margin-bottom:12px;cursor:pointer}
+  .resultado:hover{border-color:var(--verde)}
+  .resultado h3{margin:0 0 4px;color:var(--verde)}
+  .resultado .cat{font-size:.78em;color:var(--cinza);text-transform:uppercase;letter-spacing:.5px}
+  .resultado p{margin:6px 0 0;font-size:.95em;color:#333}
+  mark{background:var(--marca);padding:0 2px;border-radius:2px}
+
+  .info{color:var(--cinza);font-size:.9em;margin:8px 2px 16px}
+  .sem-resultados{text-align:center;color:var(--cinza);padding:40px 0}
+
+  .artigo{background:#fff;border:1px solid var(--borda);border-radius:10px;padding:24px 28px}
+  .artigo h1{color:var(--verde);margin-top:0}
+  .artigo .cat{font-size:.8em;color:var(--cinza);text-transform:uppercase;letter-spacing:.5px}
+  .voltar{display:inline-block;margin-bottom:14px;color:var(--verde);cursor:pointer;font-weight:600;background:none;border:none;font-size:1em;padding:0}
+  .voltar:hover{color:var(--verde-escuro)}
+
+  .sugestoes{max-width:640px;margin:24px auto 0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .sugestoes button{
+    background:#fff;border:1px solid var(--borda);border-radius:16px;padding:6px 14px;
+    cursor:pointer;font-size:.9em;color:#333
+  }
+  .sugestoes button:hover{border-color:var(--verde);color:var(--verde)}
+
+  footer{text-align:center;color:var(--cinza);font-size:.8em;padding:30px 20px}
+  .escondido{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo" onclick="irParaInicio()">TYATT Pesquisa</span>
+  <span class="offline">✓ 100% offline</span>
+</header>
+
+<div id="ecraInicial" class="ecra-inicial">
+  <h1>TYATT</h1>
+  <p>Pesquisa o que quiseres — sem gastar internet.</p>
+  <div class="caixa-pesquisa">
+    <input id="pesquisaInicial" type="search" placeholder="Pesquisar na base de conhecimento…" autocomplete="off" autofocus>
+  </div>
+  <div class="sugestoes" id="sugestoes"></div>
+</div>
+
+<main id="conteudo" class="escondido">
+  <div class="caixa-pesquisa" style="margin-bottom:16px">
+    <input id="pesquisa" type="search" placeholder="Pesquisar…" autocomplete="off">
+  </div>
+  <div id="resultados"></div>
+</main>
+
+<footer>
+  TYATT — Osendre Comércio e Serviços Lda · Todo o conteúdo fica no teu dispositivo.
+</footer>
+
+<script>
+// ─── Base de conhecimento embutida ──────────────────────────────────────────
+// Podes acrescentar mais artigos aqui ou num ficheiro conteudo.json ao lado
+// desta página (mesmo formato: lista de objetos {id, titulo, categoria, corpo}).
+const ARTIGOS = [
+  {
+    id: "malaria",
+    titulo: "Malária: sintomas, prevenção e tratamento",
+    categoria: "Saúde",
+    corpo: "A malária (paludismo) é uma doença causada por um parasita transmitido pela picada do mosquito Anopheles, que pica sobretudo entre o anoitecer e o amanhecer. Os sintomas mais comuns são febre alta, arrepios de frio, dores de cabeça, dores no corpo, cansaço, náuseas e vómitos. Numa criança, a febre com recusa de comer e sonolência é sinal de alarme. A prevenção faz-se dormindo debaixo de rede mosquiteira tratada, eliminando águas paradas perto de casa (latas, pneus, charcos), usando roupa comprida ao fim da tarde e repelente quando possível. Perante suspeita de malária, deve fazer-se o teste rápido no posto de saúde o mais cedo possível: o tratamento com antimaláricos é eficaz quando começa cedo. Nunca interromper o tratamento a meio, mesmo que a febre passe."
+  },
+  {
+    id: "agua-potavel",
+    titulo: "Como tornar a água segura para beber",
+    categoria: "Saúde",
+    corpo: "Água contaminada transmite doenças como cólera, diarreia e febre tifóide. As formas mais simples de tratar a água em casa são: ferver a água durante pelo menos 1 minuto depois de levantar fervura (o método mais seguro); usar lixívia (hipoclorito de sódio a 5%) na dose de 2 a 4 gotas por litro, mexer e esperar 30 minutos antes de beber; ou usar o método SODIS, enchendo garrafas de plástico transparentes e deixando-as ao sol forte durante 6 horas. Guardar sempre a água tratada num recipiente limpo, tapado, e tirar a água com uma caneca limpa ou torneira, nunca com as mãos. Se a água estiver turva, coar primeiro com um pano limpo antes de tratar."
+  },
+  {
+    id: "primeiros-socorros-queimaduras",
+    titulo: "Primeiros socorros: queimaduras",
+    categoria: "Saúde",
+    corpo: "Perante uma queimadura, a primeira coisa a fazer é arrefecer a zona com água corrente fresca (não gelada) durante 10 a 20 minutos. Nunca aplicar gelo, pasta de dentes, óleo, borra de café ou terra — estes remédios caseiros pioram a lesão e causam infeção. Retirar anéis, pulseiras e roupa larga perto da queimadura antes que inche, mas nunca arrancar roupa colada à pele. Cobrir com um pano limpo e húmido, sem apertar. Procurar o posto de saúde se a queimadura for maior que a palma da mão, se fizer bolhas grandes, se atingir a cara, mãos, pés ou zonas genitais, ou se a pele ficar branca ou escura (queimadura profunda). Numa criança pequena, qualquer queimadura merece avaliação."
+  },
+  {
+    id: "diarreia-crianca",
+    titulo: "Diarreia na criança: soro caseiro e sinais de perigo",
+    categoria: "Saúde",
+    corpo: "A diarreia mata sobretudo por desidratação, e a desidratação combate-se com soro de reidratação oral. Se não houver saquetas de SRO, faz-se soro caseiro: 1 litro de água tratada, 1 colher de chá rasa de sal e 8 colheres de chá de açúcar, bem misturados. Dar pequenos goles com frequência, e continuar a amamentar e a alimentar a criança. Sinais de perigo que exigem ir já ao posto de saúde: sangue nas fezes, vómitos que impedem de beber, olhos encovados, boca muito seca, choro sem lágrimas, criança muito mole ou difícil de acordar, febre alta. A prevenção passa por lavar as mãos com sabão, beber água tratada e proteger os alimentos das moscas."
+  },
+  {
+    id: "cultivo-mandioca",
+    titulo: "Cultivo da mandioca",
+    categoria: "Agricultura",
+    corpo: "A mandioca é uma das culturas mais resistentes à seca e cresce em solos pobres onde outras culturas falham. Planta-se por estacas (manivas) de 20 a 30 cm, cortadas de plantas sãs com 8 a 12 meses, enterradas inclinadas ou deitadas a 5–10 cm de profundidade, com espaçamento de cerca de 1 metro entre plantas. O melhor momento de plantar é no início das chuvas. As capinas nos primeiros 3 meses são decisivas para o rendimento. A colheita faz-se normalmente entre 9 e 18 meses. Atenção: a mandioca amarga contém compostos tóxicos (cianeto) e deve ser sempre processada — demolhada, fermentada, seca ou bem cozinhada — antes de consumida. As folhas (kizaka) são ricas em proteína e vitaminas, mas também devem ser bem cozidas."
+  },
+  {
+    id: "cultivo-milho",
+    titulo: "Cultivo do milho",
+    categoria: "Agricultura",
+    corpo: "O milho precisa de sol, água regular e solo fértil. Semeia-se no início das chuvas, em linhas afastadas 75–90 cm, com 2 sementes por covacho a 3–5 cm de profundidade e 25–30 cm entre covachos. A fase mais sensível à falta de água é a floração: uma seca nessa altura reduz muito a colheita. Capinar cedo, porque as ervas roubam água e nutrientes às plantas novas. Se houver estrume ou composto, aplicar antes da sementeira; a adubação de cobertura faz-se quando a planta tem altura do joelho. O milho está pronto a colher para grão seco quando as folhas secam e os grãos ficam duros e brilhantes. Guardar o grão bem seco em recipientes fechados para evitar o gorgulho."
+  },
+  {
+    id: "compostagem",
+    titulo: "Como fazer composto orgânico (adubo natural)",
+    categoria: "Agricultura",
+    corpo: "O composto é adubo gratuito feito de restos que normalmente se deitam fora. Numa pilha ou cova à sombra, alternar camadas de material verde (restos de comida, cascas, folhas verdes, estrume) com material castanho (folhas secas, capim seco, palha), regando cada camada. Não usar carne, óleo, plástico nem fezes de cão ou gato. Virar a pilha a cada 1–2 semanas para entrar ar; se cheirar mal está demasiado molhada — juntar material seco. Em 2 a 4 meses o composto fica escuro, solto e com cheiro a terra: está pronto a misturar no solo antes de plantar. O composto melhora a retenção de água do solo e reduz a necessidade de fertilizante comprado."
+  },
+  {
+    id: "percentagens",
+    titulo: "Matemática prática: calcular percentagens",
+    categoria: "Matemática",
+    corpo: "Percentagem significa 'por cada 100'. Para calcular X% de um valor, multiplica-se o valor por X e divide-se por 100. Exemplo: 15% de 20.000 Kz = 20.000 × 15 ÷ 100 = 3.000 Kz. Para saber que percentagem uma parte representa do total, divide-se a parte pelo total e multiplica-se por 100: se 30 dos 120 alunos faltaram, faltaram 30 ÷ 120 × 100 = 25%. Um desconto de 20% num produto de 5.000 Kz tira 1.000 Kz, ficando 4.000 Kz. Um aumento de 10% num salário de 80.000 Kz acrescenta 8.000 Kz. Truque útil: 10% é só dividir por 10; 5% é metade disso; 1% é dividir por 100 — e com estes três blocos montam-se quase todas as contas de cabeça."
+  },
+  {
+    id: "regra-de-tres",
+    titulo: "Matemática prática: regra de três simples",
+    categoria: "Matemática",
+    corpo: "A regra de três resolve problemas de proporção: se conheço três valores, descubro o quarto. Exemplo: se 3 kg de fuba custam 1.500 Kz, quanto custam 5 kg? Escreve-se 3 kg → 1.500 Kz e 5 kg → ?. Multiplica-se cruzado e divide-se: 5 × 1.500 ÷ 3 = 2.500 Kz. Funciona para receitas (dobrar ingredientes), combustível (litros por distância), doses de medicamentos veterinários por peso do animal e rendimento de sementes por área. Atenção às proporções inversas: se 2 pedreiros fazem um muro em 6 dias, 4 pedreiros fazem em MENOS tempo (3 dias), não em mais — quando uma grandeza sobe e a outra desce, multiplica-se em vez de cruzar."
+  },
+  {
+    id: "historia-angola",
+    titulo: "História de Angola: datas essenciais",
+    categoria: "História",
+    corpo: "O território de Angola foi habitado por povos khoisan e depois por povos bantu, que formaram reinos como o Kongo, o Ndongo e a Matamba — onde reinou a rainha Njinga Mbandi (1582–1663), símbolo da resistência à ocupação portuguesa. Os portugueses chegaram em 1482 com Diogo Cão e fundaram Luanda em 1576. Durante séculos, Angola foi marcada pelo tráfico de escravizados para o Brasil e as Américas. A luta armada de libertação começou em 1961 e a independência foi proclamada a 11 de novembro de 1975 por Agostinho Neto, primeiro presidente. Seguiu-se uma longa guerra civil entre MPLA e UNITA, que terminou em 4 de abril de 2002. Desde então o país vive em paz, com a reconstrução e a diversificação da economia como grandes desafios."
+  },
+  {
+    id: "geografia-angola",
+    titulo: "Geografia de Angola",
+    categoria: "Geografia",
+    corpo: "Angola situa-se na costa ocidental da África Austral, com 1.246.700 km² — um dos maiores países de África. Faz fronteira com a República do Congo e a RDC a norte, a Zâmbia a leste e a Namíbia a sul, e é banhada pelo oceano Atlântico a oeste. Divide-se em 21 províncias, sendo Luanda a capital. Os rios principais são o Kwanza (o maior totalmente angolano, que dá nome à moeda), o Zaire, o Cunene e o Cubango. O ponto mais alto é o Morro do Moco (2.620 m), no Huambo. O clima varia entre tropical húmido no norte, planalto ameno no centro e desértico no sul (deserto do Namibe, onde cresce a famosa welwitschia). Angola é rica em petróleo, diamantes, ferro e terras férteis."
+  },
+  {
+    id: "poupanca",
+    titulo: "Dinheiro: como organizar uma poupança",
+    categoria: "Finanças",
+    corpo: "Poupar não depende de ganhar muito, mas de decidir primeiro quanto guardar. Regra prática: quando o dinheiro entra, separar logo a poupança (mesmo que sejam 5% ou 10%) antes de pagar o resto — 'pagar-se primeiro a si mesmo'. Um orçamento simples divide o rendimento em necessidades (comida, casa, transporte), desejos e poupança. Anotar os gastos durante um mês revela para onde o dinheiro foge. A poupança deve começar por um fundo de emergência (o ideal é cobrir 3 meses de despesas) antes de qualquer investimento. Cuidado com esquemas que prometem duplicar dinheiro rápido: se parece bom demais, é burla. Em grupo, as kixikilas funcionam bem quando há confiança e regras claras escritas."
+  },
+  {
+    id: "energia-solar",
+    titulo: "Energia solar em casa: o essencial",
+    categoria: "Tecnologia",
+    corpo: "Um sistema solar doméstico básico tem 4 partes: o painel (gera energia com a luz do sol), o controlador de carga (protege a bateria), a bateria (guarda energia para a noite) e o inversor (converte para corrente alterna, se houver aparelhos de tomada). Para dimensionar, soma-se o consumo: uma lâmpada LED gasta ~5 W, um telemóvel a carregar ~10 W, uma TV ~50–100 W, um congelador ~100–200 W. Um painel de 100 W com boa exposição solar produz cerca de 400–500 Wh por dia. Os painéis devem ficar virados a norte (no hemisfério sul), sem sombra, e limpos de poeira. As baterias duram mais se nunca descarregarem por completo. Desconfiar de instalações sem controlador de carga: a bateria estraga-se em poucos meses."
+  },
+  {
+    id: "lavar-maos",
+    titulo: "Higiene: lavar as mãos salva vidas",
+    categoria: "Saúde",
+    corpo: "Lavar as mãos com água e sabão é a medida de saúde mais barata e eficaz que existe: previne diarreias, cólera, gripe, COVID-19 e infeções de pele e olhos. Os momentos críticos são antes de comer ou preparar comida, depois de usar a latrina, depois de trocar fraldas e depois de tocar em animais ou lixo. A técnica correta demora 20 segundos: molhar, ensaboar, esfregar palmas, costas das mãos, entre os dedos, unhas e pulsos, enxaguar e secar ao ar ou com pano limpo. Onde não há torneira, um tippy-tap (garrafão pendurado com corda no pé) permite lavar as mãos gastando muito pouca água. Sem sabão, a cinza limpa é uma alternativa aceitável."
+  },
+  {
+    id: "gravidez-sinais-perigo",
+    titulo: "Gravidez: consultas e sinais de perigo",
+    categoria: "Saúde",
+    corpo: "Toda a grávida deve fazer consultas pré-natais (o recomendado é começar antes das 12 semanas), onde recebe ácido fólico e ferro, vacina do tétano, teste de HIV e tratamento preventivo da malária. Sinais de perigo que exigem ir imediatamente à maternidade: hemorragia (sangramento), dores de cabeça fortes com visão turva, inchaço súbito da cara e das mãos, febre alta, dores abdominais fortes, o bebé deixar de mexer, ou perda de águas antes do tempo. O parto deve ser feito na maternidade ou com pessoal de saúde treinado. Depois do parto, a amamentação exclusiva até aos 6 meses é o melhor alimento e a melhor vacina natural que o bebé pode receber."
+  },
+  {
+    id: "nutricao-crianca",
+    titulo: "Nutrição infantil: prevenir a desnutrição",
+    categoria: "Saúde",
+    corpo: "Até aos 6 meses, o bebé só precisa de leite materno — nem água nem chás. A partir dos 6 meses, começa a alimentação complementar mantendo a amamentação até aos 2 anos: papas enriquecidas (fuba com óleo, amendoim pilado, feijão, folhas verdes bem cozidas, ovo, peixe desfiado), várias refeições por dia. Um prato equilibrado combina energia (fuba, arroz, mandioca, batata-doce), construção (feijão, carne, peixe, ovos, amendoim) e proteção (frutas e verduras). Sinais de alarme de desnutrição: a criança não cresce, emagrece, fica com o cabelo fino e amarelado, incha os pés ou fica apática. A fita MUAC no braço (vermelho = perigo) é usada nos postos de saúde para rastreio — na dúvida, levar a criança a pesar todos os meses."
+  },
+  {
+    id: "como-funciona-internet",
+    titulo: "O que é a internet e porque é que os dados custam dinheiro",
+    categoria: "Tecnologia",
+    corpo: "A internet é uma rede mundial de computadores ligados entre si. Quando pesquisas online, o teu telefone envia o pedido por rádio até uma antena da operadora, que o encaminha por cabos (muitos submarinos) até aos servidores onde a informação está guardada — e a resposta faz o caminho inverso. A operadora cobra pelos megabytes que passam nessa rede: é por isso que ver vídeos gasta muito mais saldo do que ler texto. Uma app offline como o TYATT contorna isto guardando o conteúdo todo no telefone de uma só vez: depois disso, cada pesquisa é feita localmente, no próprio aparelho, sem passar pela rede da operadora — e por isso não gasta dados nenhuns. Wi-Fi gratuito também não gasta o saldo, mas exige estar perto do sinal."
+  }
+];
+
+// ─── Motor de pesquisa ──────────────────────────────────────────────────────
+// Índice invertido construído localmente: cada pesquisa corre no dispositivo,
+// sem qualquer ligação à internet.
+
+function normalizar(texto){
+  return texto.toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "") // remove acentos
+    .replace(/[^a-z0-9\s]/g, " ");
+}
+
+function tokenizar(texto){
+  return normalizar(texto).split(/\s+/).filter(t => t.length > 1);
+}
+
+const indice = new Map(); // termo -> Map(idArtigo -> pontuação)
+
+function indexar(artigo){
+  const pesos = [[artigo.titulo, 5], [artigo.categoria, 3], [artigo.corpo, 1]];
+  for (const [campo, peso] of pesos){
+    for (const termo of tokenizar(campo)){
+      if (!indice.has(termo)) indice.set(termo, new Map());
+      const mapa = indice.get(termo);
+      mapa.set(artigo.id, (mapa.get(artigo.id) || 0) + peso);
+    }
+  }
+}
+
+ARTIGOS.forEach(indexar);
+
+// Conteúdo extra opcional (conteudo.json ao lado da página). Se não existir
+// ou a página estiver aberta a partir de file://, segue sem ele.
+fetch("conteudo.json")
+  .then(r => r.ok ? r.json() : [])
+  .then(extras => {
+    for (const artigo of extras){
+      if (!ARTIGOS.some(a => a.id === artigo.id)){
+        ARTIGOS.push(artigo);
+        indexar(artigo);
+      }
+    }
+  })
+  .catch(() => {});
+
+function pesquisar(consulta){
+  const termos = tokenizar(consulta);
+  if (termos.length === 0) return [];
+  const pontuacoes = new Map();
+
+  for (const termo of termos){
+    // correspondência exata + por prefixo (pesquisar "malar" encontra "malaria")
+    for (const [termoIndexado, docs] of indice){
+      if (termoIndexado === termo || termoIndexado.startsWith(termo)){
+        const fator = termoIndexado === termo ? 2 : 1;
+        for (const [id, peso] of docs){
+          pontuacoes.set(id, (pontuacoes.get(id) || 0) + peso * fator);
+        }
+      }
+    }
+  }
+
+  return [...pontuacoes.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([id]) => ARTIGOS.find(a => a.id === id));
+}
+
+// ─── Interface ──────────────────────────────────────────────────────────────
+const ecraInicial = document.getElementById("ecraInicial");
+const conteudo = document.getElementById("conteudo");
+const resultados = document.getElementById("resultados");
+const campoInicial = document.getElementById("pesquisaInicial");
+const campo = document.getElementById("pesquisa");
+
+function realcar(texto, consulta){
+  const termos = tokenizar(consulta);
+  if (termos.length === 0) return texto;
+  const partes = texto.split(/(\s+)/);
+  return partes.map(parte => {
+    const norm = normalizar(parte).trim();
+    return termos.some(t => norm.startsWith(t)) ? "<mark>" + parte + "</mark>" : parte;
+  }).join("");
+}
+
+function excerto(corpo, consulta){
+  const termos = tokenizar(consulta);
+  const normCorpo = normalizar(corpo);
+  let posicao = 0;
+  for (const t of termos){
+    const i = normCorpo.indexOf(t);
+    if (i >= 0){ posicao = i; break; }
+  }
+  const inicio = Math.max(0, corpo.lastIndexOf(" ", Math.max(0, posicao - 60)));
+  const fim = Math.min(corpo.length, posicao + 180);
+  return (inicio > 0 ? "…" : "") + corpo.slice(inicio, fim).trim() + (fim < corpo.length ? "…" : "");
+}
+
+function mostrarResultados(consulta){
+  if (!consulta.trim()){ irParaInicio(); return; }
+  ecraInicial.classList.add("escondido");
+  conteudo.classList.remove("escondido");
+  if (campo.value !== consulta) campo.value = consulta;
+
+  const lista = pesquisar(consulta);
+  if (lista.length === 0){
+    resultados.innerHTML = '<div class="sem-resultados">Nenhum resultado para «' + escapar(consulta) + '».<br>Tenta outra palavra ou uma palavra mais curta.</div>';
+    return;
+  }
+  resultados.innerHTML =
+    '<div class="info">' + lista.length + (lista.length === 1 ? " resultado" : " resultados") + " — pesquisa feita no teu dispositivo, 0 MB de dados gastos</div>" +
+    lista.map(a =>
+      '<div class="resultado" onclick="abrirArtigo(\'' + a.id + '\')">' +
+        '<div class="cat">' + escapar(a.categoria) + "</div>" +
+        "<h3>" + realcar(escapar(a.titulo), consulta) + "</h3>" +
+        "<p>" + realcar(escapar(excerto(a.corpo, consulta)), consulta) + "</p>" +
+      "</div>"
+    ).join("");
+}
+
+function abrirArtigo(id){
+  const a = ARTIGOS.find(x => x.id === id);
+  if (!a) return;
+  ecraInicial.classList.add("escondido");
+  conteudo.classList.remove("escondido");
+  resultados.innerHTML =
+    '<button class="voltar" onclick="mostrarResultados(document.getElementById(\'pesquisa\').value)">← Voltar aos resultados</button>' +
+    '<div class="artigo">' +
+      '<div class="cat">' + escapar(a.categoria) + "</div>" +
+      "<h1>" + escapar(a.titulo) + "</h1>" +
+      a.corpo.split(/\n+/).map(p => "<p>" + escapar(p) + "</p>").join("") +
+    "</div>";
+  window.scrollTo(0, 0);
+}
+
+function irParaInicio(){
+  conteudo.classList.add("escondido");
+  ecraInicial.classList.remove("escondido");
+  campoInicial.value = "";
+  campo.value = "";
+  campoInicial.focus();
+}
+
+function escapar(texto){
+  const div = document.createElement("div");
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
+campoInicial.addEventListener("input", e => mostrarResultados(e.target.value));
+campo.addEventListener("input", e => mostrarResultados(e.target.value));
+
+// Sugestões rápidas no ecrã inicial
+const SUGESTOES = ["malária", "água potável", "milho", "percentagens", "história de Angola", "poupança", "energia solar"];
+document.getElementById("sugestoes").innerHTML = SUGESTOES.map(s =>
+  '<button onclick="mostrarResultados(\'' + s + '\')">' + s + "</button>"
+).join("");
+</script>
+</body>
+</html>
