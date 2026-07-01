@@ -82,12 +82,20 @@
   <label class="zona-ficheiro">
     <div class="icone">📂</div>
     <b>Toca aqui para escolher o teu ficheiro .zim</b>
-    <p>ex.: wikipedia_pt_all_mini.zim</p>
-    <input type="file" id="ficheiroZim" accept=".zim" hidden>
+    <p>mostra todos os ficheiros — procura um que acabe em <b>.zim</b> (~1 GB)</p>
+    <input type="file" id="ficheiroZim" hidden>
+  </label>
+  <label class="zona-ficheiro" style="padding:18px 48px">
+    <div class="icone">🔍</div>
+    <b>Ou escolhe uma pasta — eu encontro o .zim sozinho</b>
+    <p>ex.: a pasta Download ou o cartão SD inteiro</p>
+    <input type="file" id="pastaZim" webkitdirectory hidden>
   </label>
   <p id="erroFicheiro"></p>
   <p style="font-size:.85em">Ainda não tens um ficheiro? Descarrega uma vez em
-  <b>download.kiwix.org/zim/wikipedia/</b> (a versão <b>maxi</b> inclui imagens; a <b>nopic</b> e a <b>mini</b> não têm).</p>
+  <b>download.kiwix.org/zim/wikipedia/</b> (a versão <b>maxi</b> inclui imagens; a <b>nopic</b> e a <b>mini</b> não têm).
+  <br>Nota: ficheiros dentro de <b>Android/data</b> (pasta privada do Kiwix) ficam invisíveis —
+  copia o ficheiro para <b>Download</b> primeiro.</p>
 </div>
 
 <div id="ecraConversa">
@@ -474,9 +482,36 @@ function mostrarDigitando(){
 }
 
 // ── abertura do ficheiro ──
-$("ficheiroZim").addEventListener("change", async e => {
-  const f = e.target.files[0];
-  if (!f) return;
+$("ficheiroZim").addEventListener("change", e => {
+  if (e.target.files[0]) carregarZim(e.target.files[0]);
+});
+
+// escolha de pasta: encontra automaticamente o(s) .zim lá dentro
+$("pastaZim").addEventListener("change", async e => {
+  const todos = [...e.target.files];
+  $("erroFicheiro").textContent = "";
+  let zims = todos.filter(f => f.name.toLowerCase().endsWith(".zim"));
+  if (zims.length === 0){
+    // sem extensão .zim? verifica a assinatura ZIM nos ficheiros grandes
+    const grandes = todos.filter(f => f.size > 1024 * 1024).sort((a, b) => b.size - a.size).slice(0, 20);
+    for (const f of grandes){
+      const cabeca = new Uint8Array(await f.slice(0, 4).arrayBuffer());
+      if (cabeca[0] === 0x5A && cabeca[1] === 0x49 && cabeca[2] === 0x4D && cabeca[3] === 0x04){ zims = [f]; break; }
+    }
+  }
+  if (zims.length === 0){
+    $("erroFicheiro").textContent = "⚠ Não encontrei nenhum ficheiro .zim nesta pasta (procurei em " +
+      todos.length.toLocaleString("pt") + " ficheiros). Tenta outra pasta, por exemplo Download.";
+    return;
+  }
+  zims.sort((a, b) => b.size - a.size);
+  const escolhido = zims[0];
+  if (zims.length > 1)
+    console.log("Vários .zim encontrados; a usar o maior:", escolhido.name);
+  carregarZim(escolhido);
+});
+
+async function carregarZim(f){
   $("erroFicheiro").textContent = "";
   try {
     const leitor = new LeitorZim(f);
@@ -498,7 +533,7 @@ $("ficheiroZim").addEventListener("change", async e => {
   } catch (erro) {
     $("erroFicheiro").textContent = "⚠ " + erro.message;
   }
-});
+}
 
 function perguntarChip(t){ $("campoPergunta").value = t; enviar(); }
 
