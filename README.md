@@ -2,6 +2,41 @@
 
 Ficheiros distribuídos via Releases.
 
+## TYATT Assistente (`assistente.html`)
+
+Assistente inteligente **100% offline** alimentado pelo teu ficheiro **.zim**
+(Wikipédia do Kiwix). Um único ficheiro HTML, sem dependências externas e sem
+servidor: lê o ZIM diretamente no navegador, entende a pergunta e responde.
+
+- **Entende perguntas em português**: «o que é…», «quem foi…», «quando…»,
+  «onde fica…», «quantos…», «qual é a capital de…» — e extrai do artigo a
+  frase que responde (ex.: para «quando», a frase com a data).
+- **Leitor ZIM completo em JavaScript**: cabeçalho, índice de títulos
+  (`listing/titleOrdered/v1`), redirecionamentos, clusters zstd — lê o
+  ficheiro por fatias, nunca o carrega inteiro na memória (funciona com
+  ficheiros de vários GB).
+- **Pesquisa tolerante**: ignora acentos («malaria» encontra «Malária»),
+  maiúsculas, e segue redirecionamentos («paludismo» → «Malária»).
+- **Leitor de artigos integrado**: ligações internas continuam offline e as
+  imagens são carregadas de dentro do próprio ZIM.
+
+### Como usar
+
+1. Descarrega o `assistente.html` (uma vez) e um ficheiro ZIM da Wikipédia em
+   `download.kiwix.org/zim/wikipedia/`.
+2. Abre o `assistente.html` no navegador, escolhe o teu `.zim` e pergunta.
+
+### Variantes dos ficheiros ZIM (imagens!)
+
+| Variante | Imagens | Conteúdo | Tamanho (PT) |
+|----------|---------|----------|--------------|
+| `maxi`   | ✅ sim  | artigos completos | ~12 GB |
+| `nopic`  | ❌ não  | artigos completos | ~4 GB |
+| `mini`   | ❌ não  | só a introdução de cada artigo | ~1 GB |
+
+Se o teu ZIM «está sem imagens», é porque é `nopic` ou `mini` — para ter
+imagens, descarrega a versão **maxi**.
+
 ## TYATT Pesquisa (`index.html`)
 
 Sistema de pesquisa **100% offline** — um "Google sem internet". É um único
