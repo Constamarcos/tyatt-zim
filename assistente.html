@@ -685,6 +685,35 @@ async function responder(texto){
 // mesmo contexto (mesma intenção e mesmos termos)
 let ultimaPergunta = { texto: "", q: null, termos: [] };
 
+// ── Tomada do modelo de IA (reordenador semântico opcional) ──────────────────
+// Por omissão é nulo: o assistente usa o ranking BM25. Quando um modelo é
+// ligado (ex.: re-ranker ONNX de ~300 MB, ver conteudo/plano-modelo-ia.md), ele
+// reordena os melhores candidatos por SIGNIFICADO — casando a pergunta com o
+// que foi encontrado. Interface esperada:
+//   modelo.reordenar(pergunta, candidatos, zim) -> Promise<candidatos reordenados>
+// Cada candidato tem { caminho, titulo, area, score, cobertos }.
+let modeloSemantico = null;
+
+// API pública para a app (Flutter/WebView) ou um script ligar o modelo:
+window.tyattLigarModelo = (m) => {
+  modeloSemantico = m;
+  const badge = document.getElementById("estado");
+  if (badge && zim) badge.textContent = "🧠 IA + " + zim.titulo;
+  console.log("TYATT: modelo semântico ligado.");
+};
+window.tyattDesligarModelo = () => { modeloSemantico = null; console.log("TYATT: modelo desligado."); };
+window.tyattTemModelo = () => !!modeloSemantico;
+
+async function reordenar(resultados, texto){
+  if (!modeloSemantico || resultados.length < 2) return resultados;
+  try {
+    const top = resultados.slice(0, 20);
+    const reord = await modeloSemantico.reordenar(texto, top, zim);
+    if (Array.isArray(reord) && reord.length) return reord.concat(resultados.slice(20));
+  } catch (e){ console.warn("TYATT: modelo falhou; uso o ranking base.", e); }
+  return resultados;
+}
+
 async function responderInteligente(texto, q){
   const busca = pesquisarTexto(zim, texto);
   let resultados = busca.resultados;
@@ -698,6 +727,9 @@ async function responderInteligente(texto, q){
     }
     resultados = porTitulo.map(d => ({ caminho: d.caminho, titulo: d.titulo, cobertos: 1, score: 1 }));
   }
+
+  // reordenação semântica opcional (IA); sem modelo, mantém o ranking BM25
+  resultados = await reordenar(resultados, texto);
 
   ultimaPergunta = { texto, q, termos: busca.termos };
 
