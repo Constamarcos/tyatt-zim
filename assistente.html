@@ -671,9 +671,12 @@ async function responder(texto){
     return;
   }
   if (q.tipo === "AJUDA"){
-    adicionarMsg("assistente", "<p>Funciono como um assistente: tu perguntas em português normal e eu procuro a resposta dentro do teu ficheiro, sem internet. Leio o texto todo, escolho o artigo mais relevante e mostro-te a parte que responde. Percebo <b>o que é…</b>, <b>quem foi…</b>, <b>quando…</b>, <b>onde…</b>, <b>quantos…</b>, ou apenas um tema.</p>");
+    adicionarMsg("assistente", "<p>Funciono como um assistente: tu perguntas em português normal e eu procuro a resposta dentro do teu ficheiro, sem internet. Leio o texto todo, escolho o artigo mais relevante e mostro-te a parte que responde. Percebo <b>o que é…</b>, <b>quem foi…</b>, <b>quando…</b>, <b>onde…</b>, <b>quantos…</b>, ou apenas um tema.</p><p>Depois de uma resposta, podes continuar a conversa: <b>«explica melhor»</b>, <b>«resume»</b>, <b>«dá um exemplo»</b>, <b>«e a prevenção?»</b>, <b>«e a conclusão?»</b>.</p>");
     return;
   }
+
+  // Conversa: se há um artigo em foco, tenta tratar como seguimento
+  if (contextoAtual && await tentarSeguimento(texto)) return;
 
   // Motor inteligente (ZIM do TYATT, com índice de texto completo)
   if (zim.indiceTexto){ await responderInteligente(texto, q); return; }
@@ -684,6 +687,108 @@ async function responder(texto){
 // guarda a última pergunta, para os botões de desambiguação responderem no
 // mesmo contexto (mesma intenção e mesmos termos)
 let ultimaPergunta = { texto: "", q: null, termos: [] };
+
+// ═══════════════════════ Conversa contextual ═══════════════════════
+// Sem gerar texto novo, o assistente mantém uma conversa: lembra-se do artigo
+// em foco e responde a seguimentos ("e a prevenção?", "explica melhor",
+// "resume", "e a conclusão?") a partir desse artigo.
+
+let contextoAtual = null; // { ent, paragrafos, seccoes, pos }
+
+function corta(t, n){ return t.length > n ? t.slice(0, n).replace(/\s+\S*$/, "") + "…" : t; }
+
+function extrairSeccoes(doc){
+  const seccoes = []; let atual = null;
+  for (const el of doc.body.children){
+    if (el.tagName === "H2"){ atual = { titulo: el.textContent.trim(), texto: "" }; seccoes.push(atual); }
+    else if (el.tagName === "P" && atual){
+      const t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !/^(Palavras-chave|Área|Categoria)\b/i.test(t)) atual.texto += (atual.texto ? " " : "") + t;
+    }
+  }
+  return seccoes;
+}
+
+function definirContexto(ent, doc, paragrafos){
+  contextoAtual = {
+    ent,
+    paragrafos: paragrafos || extrairParagrafos(doc),
+    seccoes: extrairSeccoes(doc),
+    pos: 1,
+  };
+}
+
+function fonteCtx(){
+  const c = contextoAtual;
+  return '<div class="fonte">📚 «' + escapar(c.ent.titulo) + "» — " + escapar(zim.titulo) + "</div>" +
+    '<div class="acoes"><button onclick="abrirArtigoIdx(' + c.ent.idx + ')">📖 Ler artigo completo</button></div>';
+}
+
+function apresentarSeccao(s){
+  adicionarMsg("assistente", "<p><b>" + escapar(s.titulo) + ":</b></p><p>" + escapar(corta(s.texto, 900)) + "</p>" + fonteCtx());
+}
+
+const SUBTOPICOS_STEM = "sintoma prevenc prevenir tratament tratar causa transmiss diagnostic complicac dose vacina sinal cuidado".split(" ");
+
+// tenta tratar a mensagem como seguimento do artigo em foco; devolve true se tratou
+async function tentarSeguimento(texto){
+  const c = contextoAtual; if (!c) return false;
+  const baixo = normalizar(texto).trim().replace(/[?!.]+$/, "").trim();
+  const palavras = baixo.split(/\s+/).filter(Boolean);
+
+  // comandos conversacionais
+  if (/^(resume|resumo|resumir|em resumo|de forma resumida|resumidamente)\b/.test(baixo)){
+    const s = c.seccoes.find(x => normalizar(x.titulo).includes("resumo"));
+    const texto = s ? s.texto : (c.paragrafos[0] || "");
+    if (!texto) return false;
+    adicionarMsg("assistente", "<p>" + escapar(corta(texto, 800)) + "</p>" + fonteCtx());
+    return true;
+  }
+  if (/(explica|explique|detalha|aprofunda).*(melhor|mais|detalhe|profund|simples)/.test(baixo) ||
+      /^(mais|continua|continuar|e depois|nao percebi|nao entendi|continua a explicar)\b/.test(baixo) ||
+      /^(isso|disto|sobre isso|entao|e entao)\b/.test(baixo)){
+    const prox = c.paragrafos.slice(c.pos, c.pos + 2);
+    if (!prox.length){ adicionarMsg("assistente", "<p>Já te mostrei o essencial. Abre o artigo completo para ler tudo. 👇</p>" + fonteCtx()); return true; }
+    c.pos += prox.length;
+    adicionarMsg("assistente", prox.map(p => "<p>" + escapar(p) + "</p>").join("") + fonteCtx());
+    return true;
+  }
+  if (/exemplo/.test(baixo)){
+    for (const p of c.paragrafos)
+      for (const f of dividirFrases(p))
+        if (/exemplo|por exemplo|tais como|como a |como o /i.test(f)){
+          adicionarMsg("assistente", "<p>" + escapar(f) + "</p>" + fonteCtx()); return true;
+        }
+    return false;
+  }
+  // secções académicas por nome
+  for (const chave of ["conclus", "introduc", "referenc", "desenvolv"]){
+    if (baixo.includes(chave.slice(0, 6)) && (baixo.startsWith("e ") || palavras.length <= 3 || /qual|mostra|ver/.test(baixo))){
+      const s = c.seccoes.find(x => normalizar(x.titulo).includes(chave));
+      if (s && s.texto){ apresentarSeccao(s); return true; }
+    }
+  }
+  // subtópico: "e a prevenção?", "e os sintomas?", "e o tratamento?"
+  let alvo = null;
+  const m = baixo.match(/^e\s+(?:a|o|os|as|d[aeo]s?)?\s*(.+)$/);
+  if (m) alvo = m[1];
+  else if (palavras.length <= 3 && SUBTOPICOS_STEM.some(s => baixo.includes(s))) alvo = baixo;
+  if (alvo){
+    const termos = tokensBusca(alvo);
+    if (termos.length){
+      const sT = c.seccoes.find(x => termos.some(t => normalizar(x.titulo).includes(t)));
+      if (sT && sT.texto){ apresentarSeccao(sT); return true; }
+      let melhor = null, best = 0;
+      for (const p of c.paragrafos){
+        const toks = new Set(tokensBusca(p));
+        let cob = 0; for (const t of termos) if (toks.has(t)) cob++;
+        if (cob > best){ best = cob; melhor = p; }
+      }
+      if (melhor && best >= 1){ adicionarMsg("assistente", "<p>" + realcar(escapar(melhor), alvo) + "</p>" + fonteCtx()); return true; }
+    }
+  }
+  return false; // não era seguimento → deixa a pesquisa normal tratar
+}
 
 // ── Tomada do modelo de IA (reordenador semântico opcional) ──────────────────
 // Por omissão é nulo: o assistente usa o ranking BM25. Quando um modelo é
@@ -753,6 +858,7 @@ async function mostrarResposta(caminho, q, termos, opcoes = {}){
   const doc = new DOMParser().parseFromString(dec.decode(blob), "text/html");
   const paragrafos = extrairParagrafos(doc);
   const resposta = extrairRespostaInteligente(paragrafos, termos, q.tipo);
+  definirContexto(ent, doc, paragrafos);
 
   let html = "";
   if (opcoes.perguntarSeAmbiguo)
@@ -808,6 +914,7 @@ async function responderPorTitulo(texto, q){
   const doc = new DOMParser().parseFromString(dec.decode(blob), "text/html");
   const paragrafos = extrairParagrafos(doc);
   const resposta = extrairResposta(q.tipo, paragrafos, q.foco);
+  definirContexto(melhor, doc, paragrafos);
   const correspondeExato = normalizar(melhor.titulo) === normalizar(q.foco);
   let html = "";
   if (!resposta){
@@ -850,6 +957,7 @@ async function mostrarArtigo(ent){
   const blob = await zim.lerBlob(ent.cluster, ent.blob);
   const doc = new DOMParser().parseFromString(dec.decode(blob), "text/html");
   doc.querySelectorAll("script, link, style, noscript").forEach(n => n.remove());
+  definirContexto(ent, doc);  // ler um artigo passa a ser o tema da conversa
 
   const cont = $("leitorConteudo");
   urlsBlob.forEach(u => URL.revokeObjectURL(u)); urlsBlob = [];
