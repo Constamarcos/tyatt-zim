@@ -332,6 +332,7 @@ function variantesDeTitulo(foco){
   v.add(palavras.map((p, i) => i > 0 && CONECTORES.has(p.toLowerCase()) ? p.toLowerCase()
         : p.charAt(0).toUpperCase() + p.slice(1)).join(" "));              // Estilo De Título
   v.add(foco.toLowerCase());
+  if (foco.length <= 6) v.add(foco.toUpperCase());                        // siglas (SIDA, VIH, TB)
   return [...v];
 }
 
@@ -566,11 +567,18 @@ async function responder(texto){
   // 1) encontrar o artigo certo (com recuos progressivos)
   let resultados = await pesquisarTitulos(zim, q.foco);
   if (resultados.length === 0){
-    const palavras = q.foco.split(/\s+/);
+    const palavras = q.foco.split(/\s+/).filter(Boolean);
+    // encurta o foco pela esquerda ("rio kwanza cheio" → "rio kwanza")
     for (let n = palavras.length - 1; n >= 1 && resultados.length === 0; n--)
       resultados = await pesquisarTitulos(zim, palavras.slice(0, n).join(" "));
-    for (const p of palavras)
-      if (resultados.length === 0 && p.length > 3) resultados = await pesquisarTitulos(zim, p);
+    // por palavra: siglas (AVC, VIH) primeiro, depois as mais longas; ignora conetores
+    if (resultados.length === 0){
+      const candidatas = palavras
+        .filter(p => p.length >= 2 && !CONECTORES.has(p.toLowerCase()))
+        .sort((a, b) => (/^[A-Z0-9]{2,}$/.test(b) - /^[A-Z0-9]{2,}$/.test(a)) || (b.length - a.length));
+      for (const p of candidatas)
+        if (resultados.length === 0) resultados = await pesquisarTitulos(zim, p);
+    }
   }
   if (resultados.length === 0){
     adicionarMsg("assistente", "<p>Não encontrei nada sobre <b>«" + escapar(q.foco) + "»</b> neste ZIM. 🙁</p><p>Tenta escrever de outra forma (ex.: o nome próprio do assunto) ou verifica se o teu ficheiro inclui esse tema.</p>");
