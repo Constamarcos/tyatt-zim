@@ -191,6 +191,18 @@ class LeitorZim {
     // metadados úteis
     this.titulo = await this.lerMetadado("Title") || this.ficheiro.name;
     this.data = await this.lerMetadado("Date") || "";
+
+    // índice de texto completo embutido (só existe nos ZIM do TYATT). Se
+    // presente, ativa a pesquisa inteligente por todo o texto; se não (ex.:
+    // Wikipedia), o assistente recorre à pesquisa por título.
+    this.indiceTexto = null;
+    try {
+      const e = await this.procurarCaminho("C", "tyatt_indice_texto");
+      if (e && e.redirect === null){
+        const raw = await this.lerBlob(e.cluster, e.blob);
+        this.indiceTexto = JSON.parse(dec.decode(raw));
+      }
+    } catch { this.indiceTexto = null; }
   }
 
   async lerMetadado(nome){
@@ -420,7 +432,8 @@ function analisarPergunta(texto){
 function extrairParagrafos(doc){
   return [...doc.querySelectorAll("p")]
     .map(p => p.textContent.replace(/\[\d+\]/g, "").replace(/\s+/g, " ").trim())
-    .filter(t => t.length > 60 && !/desambiguação|pode referir-se/i.test(t));
+    .filter(t => t.length > 60 && !/desambiguação|pode referir-se/i.test(t)
+                 && !/^(Palavras-chave|Área|Categoria)\b/i.test(t));  // ignora linhas meta
 }
 function dividirFrases(paragrafo){
   return paragrafo.split(/(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ0-9])/).filter(f => f.length > 15);
@@ -449,6 +462,104 @@ function extrairResposta(tipo, paragrafos, foco){
 
   if (frase) return { texto: frase, direta: true };
   return { texto: paragrafos[0].length > 700 ? paragrafos[0].slice(0, 700).replace(/\s+\S*$/, "") + "…" : paragrafos[0], direta: false };
+}
+
+// ═══════════════════════ Motor inteligente (texto completo) ═══════════════════════
+// Quando o ZIM traz o índice embutido, o assistente deixa de procurar só por
+// títulos: procura em TODO o texto, pesa a relevância (BM25), percebe a
+// pergunta e extrai a frase que responde — e questiona-se sobre a confiança.
+
+const STOP = new Set(("de da do das dos e a o as os um uma uns umas em no na nos nas por para com que " +
+  "se ao aos ou mas mais muito pouco nao sim ja la aqui ali isto isso aquilo este esta esse essa aquele " +
+  "aquela seu sua seus suas meu minha teu tua nosso nossa dele dela deles delas qual quais quem quando " +
+  "onde quanto quanta quantos quantas porque como ser sao foi era eram sendo tem ter ha haver estar esta " +
+  "estao me te lhe nos vos sobre entre ate desde apos contra sob eu tu ele ela eles elas tambem").split(" "));
+
+function stemPT(t){ return t.length > 4 && t.endsWith("s") ? t.slice(0, -1) : t; }
+
+function tokensBusca(texto){
+  return normalizar(texto).replace(/[^a-z0-9]+/g, " ").split(" ")
+    .filter(t => t.length >= 2 && !STOP.has(t)).map(stemPT);
+}
+
+// sinónimos populares → vocabulário dos artigos (ao nível da raiz). Ajudam a
+// encontrar o artigo mesmo quando o utilizador usa outra palavra.
+const SINONIMOS = {
+  tensao: ["hipertensao", "pressao"], pressao: ["hipertensao", "tensao"],
+  enfarte: ["cardiaco", "coracao"], infarto: ["enfarte", "cardiaco", "coracao"],
+  derrame: ["avc", "cerebral"], trombose: ["avc", "cerebral"],
+  sida: ["vih"], aids: ["vih", "sida"], hiv: ["vih"],
+  paludismo: ["malaria"], sezoe: ["malaria"], sezao: ["malaria"],
+  tuberculose: ["tb"], tisica: ["tuberculose"],
+  desmaio: ["sincope"], sufocacao: ["engasgamento"],
+  motivacao: ["maslow", "herzberg"], necessidade: ["maslow"],
+  contrato: ["contratual", "vontade"], inflacao: ["preco", "monetaria"],
+};
+
+function expandirTermos(termos){
+  const conj = new Set(termos);
+  for (const t of termos)
+    for (const s of (SINONIMOS[t] || [])) conj.add(stemPT(s));
+  return [...conj];
+}
+
+// ranking BM25 sobre o índice embutido
+function pesquisarTexto(zim, consulta){
+  const ix = zim.indiceTexto;
+  if (!ix) return null;
+  const termos = expandirTermos([...new Set(tokensBusca(consulta))]);
+  if (!termos.length) return { termos: [], resultados: [] };
+  const k1 = 1.5, b = 0.75, N = ix.N, avgdl = ix.avgdl || 1;
+  const pontos = new Map(), cobertos = new Map();
+  for (const t of termos){
+    const post = ix.p[t];
+    if (!post) continue;
+    const idf = Math.log(1 + (N - post.length + 0.5) / (post.length + 0.5));
+    for (const [docId, tf] of post){
+      const dl = ix.d[docId][3];
+      const s = idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * dl / avgdl));
+      pontos.set(docId, (pontos.get(docId) || 0) + s);
+      cobertos.set(docId, (cobertos.get(docId) || 0) + 1);
+    }
+  }
+  const resultados = [...pontos.entries()]
+    .map(([docId, score]) => ({
+      docId, score, cobertos: cobertos.get(docId),
+      caminho: ix.d[docId][0], titulo: ix.d[docId][1], area: ix.d[docId][2],
+    }))
+    .sort((a, b) => b.score - a.score || b.cobertos - a.cobertos);
+  return { termos, nTermos: termos.length, resultados };
+}
+
+// extrai a melhor resposta de um artigo, dada a pergunta e os seus termos
+function extrairRespostaInteligente(paragrafos, termosStem, tipo){
+  if (!paragrafos.length) return null;
+
+  // factoides (quando/onde/quanto/capital): procurar a frase com o padrão certo
+  const respFactual = extrairResposta(tipo, paragrafos, "");
+  if (respFactual && respFactual.direta) return respFactual;
+
+  // caso geral: a frase que cobre mais termos da pergunta
+  const frases = [];
+  for (const par of paragrafos.slice(0, 20))
+    for (const f of dividirFrases(par)) frases.push(f);
+  if (!frases.length) return null;
+
+  let melhor = null, melhorPont = 0;
+  frases.forEach((f, i) => {
+    const toks = new Set(tokensBusca(f));
+    let cob = 0;
+    for (const t of termosStem) if (toks.has(t)) cob++;
+    const pont = cob - i * 0.03;               // ligeira preferência pelo início
+    if (pont > melhorPont){ melhorPont = pont; melhor = f; }
+  });
+
+  // se uma frase cobre 2+ termos e não é logo a primeira, vale como resposta
+  // direta; senão devolve-se a introdução/resumo (1.º parágrafo).
+  if (melhor && melhorPont >= 2 && melhor !== frases[0])
+    return { texto: melhor, direta: true };
+  const intro = paragrafos[0];
+  return { texto: intro.length > 700 ? intro.slice(0, 700).replace(/\s+\S*$/, "") + "…" : intro, direta: false };
 }
 
 // ═══════════════════════ Interface de conversa ═══════════════════════
@@ -556,22 +667,98 @@ async function responder(texto){
   const q = analisarPergunta(texto);
 
   if (q.tipo === "SAUDACAO"){
-    adicionarMsg("assistente", "<p>Olá! 😊 Estou pronto. Pergunta-me qualquer coisa — por exemplo «O que é a fotossíntese?» ou «Quando nasceu a Rainha Njinga?».</p>");
+    adicionarMsg("assistente", "<p>Olá! 😊 Estou pronto. Pergunta-me qualquer coisa — por exemplo «O que é a inflação?», «como tratar uma queimadura?» ou «o que é a separação de poderes?».</p>");
     return;
   }
   if (q.tipo === "AJUDA"){
-    adicionarMsg("assistente", "<p>Funciono assim: tu perguntas em português normal e eu procuro a resposta dentro do teu ficheiro ZIM, sem internet. Percebo perguntas como <b>o que é…</b>, <b>quem foi…</b>, <b>quando…</b>, <b>onde fica…</b>, <b>quantos…</b> e <b>qual é a capital de…</b>. Também podes escrever só um tema, como «rio Kwanza».</p>");
+    adicionarMsg("assistente", "<p>Funciono como um assistente: tu perguntas em português normal e eu procuro a resposta dentro do teu ficheiro, sem internet. Leio o texto todo, escolho o artigo mais relevante e mostro-te a parte que responde. Percebo <b>o que é…</b>, <b>quem foi…</b>, <b>quando…</b>, <b>onde…</b>, <b>quantos…</b>, ou apenas um tema.</p>");
     return;
   }
 
-  // 1) encontrar o artigo certo (com recuos progressivos)
+  // Motor inteligente (ZIM do TYATT, com índice de texto completo)
+  if (zim.indiceTexto){ await responderInteligente(texto, q); return; }
+  // Recurso para ZIM sem índice (ex.: Wikipedia): pesquisa por título
+  await responderPorTitulo(texto, q);
+}
+
+// guarda a última pergunta, para os botões de desambiguação responderem no
+// mesmo contexto (mesma intenção e mesmos termos)
+let ultimaPergunta = { texto: "", q: null, termos: [] };
+
+async function responderInteligente(texto, q){
+  const busca = pesquisarTexto(zim, texto);
+  let resultados = busca.resultados;
+
+  // se o texto completo não devolveu nada, tenta ainda pelo título
+  if (resultados.length === 0){
+    const porTitulo = await pesquisarTitulos(zim, q.foco);
+    if (porTitulo.length === 0){
+      adicionarMsg("assistente", "<p>Não encontrei nada sobre <b>«" + escapar(q.foco) + "»</b> neste ficheiro. 🙁</p><p>Tenta reformular com outras palavras, ou verifica se este tema está incluído.</p>");
+      return;
+    }
+    resultados = porTitulo.map(d => ({ caminho: d.caminho, titulo: d.titulo, cobertos: 1, score: 1 }));
+  }
+
+  ultimaPergunta = { texto, q, termos: busca.termos };
+
+  const top = resultados[0], segundo = resultados[1];
+  const confiante = top.cobertos >= Math.max(2, Math.ceil(busca.nTermos * 0.5)) || busca.nTermos <= 1;
+  const ambiguo = segundo && segundo.score >= 0.82 * top.score &&
+                  normalizar(segundo.titulo) !== normalizar(top.titulo);
+
+  await mostrarResposta(top.caminho, q, busca.termos, {
+    hedge: !confiante,
+    alternativas: resultados.slice(1, 5),
+    perguntarSeAmbiguo: ambiguo,
+  });
+}
+
+// abre um artigo pelo caminho, extrai a resposta e mostra-a
+async function mostrarResposta(caminho, q, termos, opcoes = {}){
+  const ent = await zim.resolverRedirect(await zim.procurarCaminho("C", caminho));
+  if (!ent){ adicionarMsg("assistente", "<p>Não consegui abrir esse artigo.</p>"); return; }
+  const blob = await zim.lerBlob(ent.cluster, ent.blob);
+  const doc = new DOMParser().parseFromString(dec.decode(blob), "text/html");
+  const paragrafos = extrairParagrafos(doc);
+  const resposta = extrairRespostaInteligente(paragrafos, termos, q.tipo);
+
+  let html = "";
+  if (opcoes.perguntarSeAmbiguo)
+    html += "<p>Encontrei mais do que um tema parecido — mostro-te o mais provável; se não for, escolhe em baixo. 🤔</p>";
+  else if (opcoes.hedge)
+    html += "<p>Não tenho um artigo exatamente sobre isso, mas o mais próximo que encontrei é <b>«" + escapar(ent.titulo) + "»</b>:</p>";
+  else if (resposta && !resposta.direta)
+    html += "<p>Sobre <b>«" + escapar(ent.titulo) + "»</b>:</p>";
+
+  if (resposta) html += "<p>" + realcar(escapar(resposta.texto), termos.join(" ")) + "</p>";
+  else html += "<p>Encontrei o artigo <b>«" + escapar(ent.titulo) + "»</b>, mas não consegui extrair um resumo — abre-o em baixo. 👇</p>";
+
+  html += '<div class="fonte">📚 Fonte: «' + escapar(ent.titulo) + "» — " + escapar(zim.titulo) + " (offline)</div>";
+  html += '<div class="acoes"><button onclick="abrirArtigoIdx(' + ent.idx + ')">📖 Ler artigo completo</button></div>';
+
+  const alt = (opcoes.alternativas || []).filter(d => normalizar(d.titulo) !== normalizar(ent.titulo));
+  if (alt.length){
+    html += (opcoes.perguntarSeAmbiguo ? "<p style='margin:8px 0 2px;font-size:.9em'>Ou querias saber sobre:</p>" : "");
+    html += '<div class="chips-sugestao">' + alt.slice(0, 4).map(d =>
+      "<button onclick=\"responderDoArtigo('" + d.caminho.replace(/'/g, "\\'") + "')\">" + escapar(d.titulo) + "</button>").join("") + "</div>";
+  }
+  adicionarMsg("assistente", html);
+}
+
+// botão de desambiguação: responde a partir de um artigo específico, mantendo
+// a pergunta original (intenção e termos)
+async function responderDoArtigo(caminho){
+  const { q, termos } = ultimaPergunta;
+  await mostrarResposta(caminho, q || { tipo: "TOPICO" }, termos || [], {});
+}
+
+// Pesquisa por título (recurso para ZIM sem índice de texto completo)
+async function responderPorTitulo(texto, q){
   let resultados = await pesquisarTitulos(zim, q.foco);
   if (resultados.length === 0){
     const palavras = q.foco.split(/\s+/).filter(Boolean);
-    // encurta o foco pela esquerda ("rio kwanza cheio" → "rio kwanza")
     for (let n = palavras.length - 1; n >= 1 && resultados.length === 0; n--)
       resultados = await pesquisarTitulos(zim, palavras.slice(0, n).join(" "));
-    // por palavra: siglas (AVC, VIH) primeiro, depois as mais longas; ignora conetores
     if (resultados.length === 0){
       const candidatas = palavras
         .filter(p => p.length >= 2 && !CONECTORES.has(p.toLowerCase()))
@@ -584,34 +771,25 @@ async function responder(texto){
     adicionarMsg("assistente", "<p>Não encontrei nada sobre <b>«" + escapar(q.foco) + "»</b> neste ZIM. 🙁</p><p>Tenta escrever de outra forma (ex.: o nome próprio do assunto) ou verifica se o teu ficheiro inclui esse tema.</p>");
     return;
   }
-
-  // 2) abrir o melhor artigo e extrair a resposta
   const melhor = await zim.resolverRedirect(resultados[0]);
   const blob = await zim.lerBlob(melhor.cluster, melhor.blob);
   const doc = new DOMParser().parseFromString(dec.decode(blob), "text/html");
   const paragrafos = extrairParagrafos(doc);
   const resposta = extrairResposta(q.tipo, paragrafos, q.foco);
-
-  const correspondeExato = normalizar(melhor.titulo) === normalizar(q.foco) ||
-                           normalizar(resultados[0].titulo) === normalizar(q.foco);
+  const correspondeExato = normalizar(melhor.titulo) === normalizar(q.foco);
   let html = "";
   if (!resposta){
     html = "<p>Encontrei o artigo <b>«" + escapar(melhor.titulo) + "»</b>, mas não consegui extrair um resumo. Abre o artigo completo aqui em baixo. 👇</p>";
   } else {
-    if (resposta.direta) html += "<p>" + realcar(escapar(resposta.texto), q.foco) + "</p>";
-    else {
-      if (!correspondeExato) html += "<p>Acho que te referes a <b>«" + escapar(melhor.titulo) + "»</b>:</p>";
-      html += "<p>" + realcar(escapar(resposta.texto), q.foco) + "</p>";
-    }
+    if (!resposta.direta && !correspondeExato) html += "<p>Acho que te referes a <b>«" + escapar(melhor.titulo) + "»</b>:</p>";
+    html += "<p>" + realcar(escapar(resposta.texto), q.foco) + "</p>";
     html += '<div class="fonte">📚 Fonte: artigo «' + escapar(melhor.titulo) + "» — " + escapar(zim.titulo) + " (offline)</div>";
   }
   html += '<div class="acoes"><button onclick="abrirArtigoIdx(' + melhor.idx + ')">📖 Ler artigo completo</button></div>';
-
   const outros = resultados.slice(1, 5).filter(d => d.idx !== melhor.idx);
   if (outros.length)
     html += '<div class="chips-sugestao">' + outros.map(d =>
       '<button onclick="abrirArtigoIdx(' + d.idx + ')">' + escapar(d.titulo) + "</button>").join("") + "</div>";
-
   adicionarMsg("assistente", html);
 }
 
