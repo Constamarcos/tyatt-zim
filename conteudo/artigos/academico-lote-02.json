@@ -1,0 +1,203 @@
+[
+{
+"id": "inflacao",
+"tipo": "academico",
+"titulo": "A Inflação: Causas, Efeitos e Políticas de Controlo",
+"categoria": "Economia",
+"area": "Macroeconomia",
+"nivel": "Ensino Superior",
+"resumo": "A inflação é o aumento generalizado e continuado do nível geral dos preços numa economia, que se traduz na perda de poder de compra da moeda. Este artigo distingue os principais tipos de inflação, analisa as suas causas — a inflação pela procura, pelos custos e a de origem monetária —, examina os seus efeitos sobre o rendimento, a poupança e a atividade económica, e apresenta as políticas monetárias e orçamentais utilizadas para a controlar. Discute-se ainda a relevância do tema para economias como a angolana, dependente das receitas do petróleo e da taxa de câmbio, concluindo-se que a estabilidade dos preços é condição essencial do desenvolvimento sustentado.",
+"palavras_chave": ["inflação", "poder de compra", "política monetária", "procura agregada", "taxa de câmbio", "Banco Central"],
+"seccoes": [
+{
+"titulo": "Introdução",
+"corpo": "Poucos fenómenos económicos afetam tão diretamente a vida das famílias como a inflação. Quando os preços sobem de forma persistente, o mesmo salário compra cada vez menos bens, a poupança perde valor e o planeamento do futuro torna-se incerto. Compreender a inflação — as suas causas, os seus efeitos e as formas de a controlar — é, por isso, fundamental para qualquer estudante de economia e para qualquer cidadão.\n\nA inflação define-se como o aumento generalizado e continuado do nível geral dos preços. Duas notas são essenciais nesta definição: o aumento deve ser generalizado, atingindo o conjunto dos bens e serviços, e não apenas um produto isolado; e deve ser continuado, e não uma subida pontual. Este artigo tem por objetivo explicar os tipos e as causas da inflação, analisar os seus efeitos económicos e sociais e apresentar as políticas de controlo, com atenção particular ao contexto das economias em desenvolvimento e, em especial, da economia angolana."
+},
+{
+"titulo": "Conceito e medição",
+"corpo": "O nível geral dos preços mede-se habitualmente através de índices, sendo o mais conhecido o Índice de Preços no Consumidor (IPC), que acompanha a evolução do preço de um conjunto representativo de bens e serviços — o «cabaz» de consumo das famílias. A taxa de inflação é a variação percentual desse índice num dado período, geralmente um ano.\n\nDistinguem-se graus de inflação. A inflação moderada corresponde a subidas lentas e previsíveis dos preços. A inflação galopante refere-se a taxas muito elevadas, de dois ou três dígitos, que desorganizam a economia. A hiperinflação é o caso extremo, em que os preços disparam descontroladamente e a moeda perde rapidamente a sua função. Existe ainda a deflação, situação inversa de descida generalizada dos preços, que, embora possa parecer favorável, costuma acompanhar recessões e travar a atividade económica."
+},
+{
+"titulo": "Causas da inflação",
+"corpo": "Os economistas distinguem tradicionalmente três grandes explicações para a inflação.\n\nA inflação pela procura ocorre quando a procura de bens e serviços cresce mais depressa do que a capacidade da economia para os produzir. Se há muito dinheiro a perseguir poucos bens, os preços sobem. É o caso, por exemplo, de um forte aumento do consumo ou do gasto público sem aumento correspondente da produção.\n\nA inflação pelos custos resulta do aumento dos custos de produção — salários, matérias-primas, energia, ou bens importados que ficam mais caros. As empresas, para manter as margens, transferem esses custos para os preços de venda. Num país que importa grande parte do que consome, a desvalorização da moeda encarece as importações e alimenta este tipo de inflação.\n\nA explicação monetária, associada ao economista Milton Friedman, sustenta que a inflação é, em última análise, um fenómeno monetário: resulta de um crescimento da quantidade de moeda em circulação superior ao crescimento da produção. Quando se emite moeda em excesso, cada unidade monetária vale menos e os preços sobem. Estas causas não se excluem: numa economia real, combinam-se frequentemente."
+},
+{
+"titulo": "Efeitos da inflação",
+"corpo": "A inflação produz efeitos profundos e, na maioria, prejudiciais. O mais evidente é a perda de poder de compra: com a subida dos preços, o rendimento real diminui, sobretudo para quem tem rendimentos fixos, como assalariados e pensionistas, que veem o seu dinheiro valer cada vez menos.\n\nA inflação penaliza também a poupança, pois o dinheiro guardado perde valor ao longo do tempo se a remuneração não acompanhar a subida dos preços. Cria incerteza, dificultando o planeamento e o investimento das empresas, que não sabem quais serão os custos e os preços futuros. Redistribui rendimento de forma muitas vezes injusta, beneficiando os devedores (que pagam dívidas com moeda desvalorizada) e prejudicando os credores. Nas suas formas mais graves, corrói a confiança na moeda nacional e leva as pessoas a refugiarem-se em moeda estrangeira ou em bens reais. Por tudo isto, a estabilidade dos preços é considerada um objetivo central da política económica."
+},
+{
+"titulo": "Políticas de controlo e o caso angolano",
+"corpo": "O combate à inflação recorre sobretudo a dois instrumentos. A política monetária, conduzida pelo banco central, procura controlar a quantidade de moeda e o crédito na economia, nomeadamente subindo as taxas de juro para conter a procura e a emissão monetária. A política orçamental, conduzida pelo governo, pode contribuir através da disciplina nas despesas públicas e do equilíbrio das contas do Estado, evitando alimentar a procura em excesso.\n\nNo caso angolano, a inflação está historicamente ligada a fatores específicos: a forte dependência das receitas do petróleo, que torna a economia vulnerável às variações do preço do barril; a elevada dependência das importações, que faz da taxa de câmbio um determinante central dos preços internos; e a necessidade de disciplina monetária e orçamental. O Banco Nacional de Angola tem como uma das suas principais missões a preservação do valor da moeda nacional, o kwanza. A experiência mostra que a estabilidade dos preços não se alcança com medidas isoladas, mas com a combinação de política monetária prudente, disciplina orçamental, diversificação da economia para reduzir a dependência externa e aumento da produção nacional."
+},
+{
+"titulo": "Conclusão",
+"corpo": "A inflação é muito mais do que a simples subida dos preços: é um fenómeno que afeta o poder de compra, a poupança, a distribuição do rendimento e a confiança na moeda. Vimos que pode ter origem na procura, nos custos ou na expansão monetária, e que os seus efeitos recaem sobretudo sobre os mais vulneráveis, que dispõem de rendimentos fixos.\n\nControlar a inflação exige uma combinação de políticas monetárias e orçamentais rigorosas e, nas economias em desenvolvimento, esforços estruturais de diversificação e de aumento da produção. Para Angola, cuja economia é sensível ao petróleo e ao câmbio, a estabilidade dos preços é uma condição indispensável do crescimento sustentado e da melhoria das condições de vida. Um estudante de economia que compreenda a inflação compreende uma das chaves do bem-estar coletivo."
+}
+],
+"referencias": [
+"KEYNES, John Maynard — Teoria Geral do Emprego, do Juro e da Moeda (1936).",
+"FRIEDMAN, Milton — Inflation: Causes and Consequences (1963).",
+"SAMUELSON, P.; NORDHAUS, W. — Economia.",
+"MANKIW, N. Gregory — Introdução à Economia.",
+"Banco Nacional de Angola — relatórios de política monetária."
+],
+"aliases": ["Subida de preços", "Custo de vida", "Perda de poder de compra", "Hiperinflação"]
+},
+{
+"id": "partida-dobrada",
+"tipo": "academico",
+"titulo": "A Partida Dobrada e a Equação Fundamental do Património",
+"categoria": "Contabilidade",
+"area": "Contabilidade Financeira",
+"nivel": "Ensino Superior",
+"resumo": "O método das partidas dobradas é o princípio fundamental da contabilidade moderna, segundo o qual cada operação económica produz pelo menos dois registos de igual valor, um a débito e outro a crédito. Este artigo apresenta a equação fundamental do património — Ativo igual a Passivo mais Capital Próprio —, explica a lógica do débito e do crédito, descreve o funcionamento das contas e demonstra, através de exemplos, como as operações mantêm sempre o equilíbrio contabilístico. Conclui-se que a partida dobrada, formalizada por Luca Pacioli no século XV, continua a ser o alicerce da informação financeira das empresas e a garantia da sua fiabilidade.",
+"palavras_chave": ["partida dobrada", "débito e crédito", "equação patrimonial", "ativo", "passivo", "capital próprio"],
+"seccoes": [
+{
+"titulo": "Introdução",
+"corpo": "A contabilidade é frequentemente descrita como a linguagem dos negócios, porque traduz em números a situação e a atividade económica de uma organização. No coração desta linguagem está um método simples e engenhoso: a partida dobrada. Compreendê-lo é o primeiro e mais importante passo no estudo da contabilidade.\n\nO método das partidas dobradas assenta numa ideia fundamental: nenhuma operação económica ocorre isoladamente; toda a operação tem origem e aplicação, tem duas faces. Comprar mercadorias a dinheiro, por exemplo, aumenta as mercadorias e diminui o dinheiro. Registar apenas uma dessas faces daria uma imagem incompleta. Este artigo tem por objetivo apresentar a equação fundamental do património, explicar a lógica do débito e do crédito e demonstrar como a partida dobrada garante o equilíbrio permanente das contas."
+},
+{
+"titulo": "A equação fundamental do património",
+"corpo": "Toda a contabilidade repousa sobre uma igualdade essencial, a equação fundamental do património: Ativo = Passivo + Capital Próprio.\n\nO Ativo representa os bens e direitos da empresa — o dinheiro em caixa e nos bancos, as mercadorias, os equipamentos, os edifícios, os valores a receber de clientes. É tudo aquilo que a empresa possui e que tem valor económico. O Passivo representa as obrigações da empresa perante terceiros — as dívidas a fornecedores, os empréstimos bancários, os impostos a pagar. É aquilo que a empresa deve. O Capital Próprio representa o valor que pertence aos donos da empresa: corresponde ao Ativo depois de deduzido o Passivo, ou seja, à riqueza líquida.\n\nEsta equação está sempre em equilíbrio, por uma razão lógica: tudo o que a empresa possui (Ativo) foi necessariamente financiado por alguém — ou por terceiros (Passivo) ou pelos próprios donos (Capital Próprio). O património da empresa é, assim, sempre olhado por duas perspetivas: o que existe e de onde veio."
+},
+{
+"titulo": "Débito, crédito e o funcionamento das contas",
+"corpo": "Para registar as operações, a contabilidade utiliza contas, cada uma correspondente a um elemento do património (Caixa, Bancos, Mercadorias, Fornecedores, etc.). Cada conta tem dois lados: o débito, à esquerda, e o crédito, à direita. Estes termos não têm o sentido comum de «dever» ou «haver a receber»: são apenas convenções que indicam o lado do registo.\n\nA regra é a seguinte: as contas do Ativo aumentam por débito e diminuem por crédito; as contas do Passivo e do Capital Próprio aumentam por crédito e diminuem por débito. O princípio da partida dobrada exige que, em cada operação, o total dos débitos seja sempre igual ao total dos créditos. É esta igualdade permanente que garante que a equação fundamental se mantém equilibrada e que os registos estão consistentes.\n\nSempre que se lança uma operação, pergunta-se: que contas são afetadas? Aumentam ou diminuem? E, em função da sua natureza, debita-se ou credita-se. A soma dos débitos e dos créditos de cada lançamento deve coincidir."
+},
+{
+"titulo": "Exemplos de aplicação",
+"corpo": "Consideremos algumas operações simples de uma empresa. Primeiro, os donos investem 1.000.000 de kwanzas, depositados no banco. A conta Bancos (Ativo) aumenta, logo debita-se; a conta Capital Próprio aumenta, logo credita-se. Débito e crédito são iguais, e a equação mantém-se: o Ativo cresceu 1.000.000 e o Capital Próprio cresceu 1.000.000.\n\nSegundo, a empresa compra mercadorias por 300.000 kwanzas, pagando a dinheiro do banco. A conta Mercadorias (Ativo) aumenta, debita-se 300.000; a conta Bancos (Ativo) diminui, credita-se 300.000. Aqui o total do Ativo não se altera — apenas muda a sua composição —, mas o equilíbrio débito/crédito mantém-se.\n\nTerceiro, a empresa compra equipamento por 500.000 kwanzas a crédito, a pagar mais tarde ao fornecedor. A conta Equipamento (Ativo) aumenta, debita-se; a conta Fornecedores (Passivo) aumenta, credita-se. O Ativo e o Passivo crescem no mesmo montante, e a equação continua equilibrada. Em todos os casos, cada operação respeita a partida dobrada e preserva a igualdade fundamental."
+},
+{
+"titulo": "Conclusão",
+"corpo": "A partida dobrada é o alicerce sobre o qual assenta toda a contabilidade moderna. Formalizada pelo matemático italiano Luca Pacioli em 1494, na sua obra que descreveu o método usado pelos mercadores de Veneza, mantém-se, mais de cinco séculos depois, como o princípio essencial do registo contabilístico em todo o mundo.\n\nA sua força está na simplicidade e no rigor: ao exigir que cada operação seja registada em dupla face, com débitos iguais a créditos, garante o equilíbrio permanente da equação fundamental do património e permite detetar erros. Compreender a partida dobrada e a relação entre Ativo, Passivo e Capital Próprio é dominar a gramática da contabilidade — condição indispensável para elaborar e interpretar as demonstrações financeiras que informam a gestão das empresas e a confiança de quem com elas se relaciona."
+}
+],
+"referencias": [
+"PACIOLI, Luca — Summa de Arithmetica, Geometria, Proportioni et Proportionalità (1494).",
+"BORGES, A.; RODRIGUES, A.; RODRIGUES, R. — Elementos de Contabilidade Geral.",
+"FESS, P.; WARREN, C. — Accounting Principles.",
+"Sistema de normalização contabilística (normas contabilísticas aplicáveis)."
+],
+"aliases": ["Método das partidas dobradas", "Débito e crédito", "Equação patrimonial", "Ativo passivo e capital próprio", "Balanço contabilístico"]
+},
+{
+"id": "teorias-da-aprendizagem",
+"tipo": "academico",
+"titulo": "As Teorias da Aprendizagem: Behaviorismo, Cognitivismo e Construtivismo",
+"categoria": "Psicologia",
+"area": "Psicologia da Educação",
+"nivel": "Ensino Superior",
+"resumo": "As teorias da aprendizagem procuram explicar como as pessoas adquirem conhecimentos, competências e comportamentos. Este artigo apresenta as três grandes correntes que marcaram a psicologia da educação: o behaviorismo, centrado na relação entre estímulo e resposta; o cognitivismo, que estuda os processos mentais internos; e o construtivismo, que concebe a aprendizagem como construção ativa do conhecimento pelo próprio sujeito. Discutem-se os principais autores — Pavlov, Skinner, Piaget, Vygotsky e Ausubel — e as suas implicações para a prática pedagógica, concluindo-se que um ensino eficaz combina, de forma fundamentada, contributos das diferentes perspetivas.",
+"palavras_chave": ["aprendizagem", "behaviorismo", "cognitivismo", "construtivismo", "Piaget", "Vygotsky"],
+"seccoes": [
+{
+"titulo": "Introdução",
+"corpo": "Como aprendem as pessoas? Esta pergunta, aparentemente simples, está no centro da educação e da psicologia. A resposta que se lhe dá determina a forma como se ensina, como se organizam as escolas e como se avaliam os alunos. Ao longo do século XX, diferentes correntes procuraram explicar o fenómeno da aprendizagem, oferecendo respostas distintas e, por vezes, opostas.\n\nA aprendizagem pode definir-se como uma mudança relativamente permanente no comportamento ou no conhecimento, resultante da experiência. Este artigo tem por objetivo apresentar as três grandes teorias da aprendizagem — o behaviorismo, o cognitivismo e o construtivismo —, os seus principais autores e as suas implicações para a prática pedagógica, oferecendo ao futuro professor um quadro que o ajude a fundamentar as suas opções de ensino."
+},
+{
+"titulo": "O behaviorismo",
+"corpo": "O behaviorismo, ou comportamentalismo, dominou a primeira metade do século XX. Para esta corrente, a psicologia deve ocupar-se apenas do comportamento observável, e não dos processos mentais internos, considerados inacessíveis. A aprendizagem é entendida como a associação entre estímulos e respostas.\n\nO fisiologista russo Ivan Pavlov demonstrou o condicionamento clássico: um estímulo neutro, associado repetidamente a um estímulo natural, passa a provocar uma resposta — como o cão que saliva ao ouvir a campainha associada à comida. O psicólogo norte-americano B. F. Skinner desenvolveu o condicionamento operante, mostrando que os comportamentos seguidos de consequências agradáveis (reforço) tendem a repetir-se, enquanto os seguidos de consequências desagradáveis tendem a extinguir-se.\n\nNa educação, o behaviorismo traduz-se na valorização do reforço, da repetição, dos objetivos claros e da instrução por etapas. Embora criticado por reduzir a aprendizagem a associações e por ignorar o pensamento, deixou contributos duradouros, como a importância do feedback e do reforço positivo na sala de aula."
+},
+{
+"titulo": "O cognitivismo",
+"corpo": "A partir de meados do século XX, o cognitivismo reagiu ao behaviorismo, defendendo que não se pode compreender a aprendizagem sem estudar os processos mentais internos: a perceção, a memória, o raciocínio, a resolução de problemas. A mente deixa de ser uma «caixa negra» para se tornar o próprio objeto de estudo.\n\nPara os cognitivistas, aprender não é apenas associar estímulos e respostas, mas processar, organizar e armazenar informação. Ganha relevância a forma como o conhecimento novo se relaciona com o que já se sabe. David Ausubel formulou o conceito de aprendizagem significativa, distinguindo-a da aprendizagem mecânica: aprende-se significativamente quando a nova informação se liga, de modo não arbitrário, aos conhecimentos que o aluno já possui. Daí a célebre ideia de Ausubel de que o fator isolado mais importante na aprendizagem é aquilo que o aluno já sabe.\n\nNa prática pedagógica, o cognitivismo valoriza a organização dos conteúdos, a ativação de conhecimentos prévios, o uso de esquemas e mapas conceptuais e o desenvolvimento de estratégias de estudo e de memória."
+},
+{
+"titulo": "O construtivismo",
+"corpo": "O construtivismo concebe a aprendizagem como um processo ativo, em que o sujeito constrói o seu próprio conhecimento a partir da interação com o mundo e com os outros. O conhecimento não é transmitido de forma passiva, mas edificado pelo aprendiz.\n\nO biólogo e psicólogo suíço Jean Piaget estudou o desenvolvimento cognitivo da criança, descrevendo como o conhecimento se constrói através de processos de assimilação e acomodação, ao longo de estádios de desenvolvimento. Para Piaget, a criança é um investigador ativo que constrói estruturas mentais cada vez mais complexas. O psicólogo russo Lev Vygotsky acrescentou uma dimensão social decisiva: a aprendizagem ocorre na interação com os outros e é mediada pela linguagem e pela cultura. O seu conceito de zona de desenvolvimento proximal designa a distância entre o que o aluno consegue fazer sozinho e o que consegue fazer com a ajuda de alguém mais capaz — o que fundamenta o papel do professor e da colaboração entre pares.\n\nNa educação, o construtivismo inspira métodos ativos, centrados no aluno, que valorizam a descoberta, a resolução de problemas, o trabalho de grupo e a construção do conhecimento a partir da experiência."
+},
+{
+"titulo": "Conclusão",
+"corpo": "As três grandes teorias da aprendizagem oferecem olhares diferentes, mas não necessariamente incompatíveis, sobre um mesmo fenómeno. O behaviorismo chama a atenção para o papel do reforço e da prática; o cognitivismo, para os processos internos e para a importância dos conhecimentos prévios; o construtivismo, para o carácter ativo e social da construção do saber.\n\nUm professor bem formado não adere cegamente a uma única corrente, mas compreende os contributos de cada uma e mobiliza-os de forma fundamentada, consoante os objetivos, os conteúdos e os alunos. Reforçar comportamentos, organizar significativamente a informação e promover a construção ativa do conhecimento não são práticas contraditórias, mas complementares. Conhecer as teorias da aprendizagem é, para o educador, a base sobre a qual se constrói uma prática pedagógica consciente e eficaz — tanto mais necessária nos sistemas educativos dos PALOP, empenhados em melhorar a qualidade do ensino."
+}
+],
+"referencias": [
+"SKINNER, B. F. — Ciência e Comportamento Humano.",
+"PIAGET, Jean — A Psicologia da Criança.",
+"VYGOTSKY, Lev — Pensamento e Linguagem.",
+"AUSUBEL, David — Psicologia Educacional.",
+"BANDURA, Albert — Teoria da Aprendizagem Social."
+],
+"aliases": ["Behaviorismo", "Cognitivismo", "Construtivismo", "Aprendizagem significativa", "Zona de desenvolvimento proximal", "Condicionamento operante"]
+},
+{
+"id": "contrato-formacao-validade",
+"tipo": "academico",
+"titulo": "O Contrato: Formação, Validade e Efeitos",
+"categoria": "Direito",
+"area": "Direito Civil (Obrigações)",
+"nivel": "Ensino Superior",
+"resumo": "O contrato é o principal instrumento jurídico da vida económica e social, constituindo um acordo de vontades destinado a produzir efeitos jurídicos. Este artigo, à luz da tradição jurídica de raiz romano-germânica que informa o Código Civil vigente em Angola, analisa o conceito de contrato, o processo da sua formação através da proposta e da aceitação, os requisitos da sua validade — capacidade, consentimento, objeto e forma — e os seus efeitos, com destaque para o princípio de que o contrato deve ser pontualmente cumprido. Discutem-se ainda os vícios da vontade e as consequências do incumprimento, sublinhando-se a função do contrato na segurança das relações jurídicas.",
+"palavras_chave": ["contrato", "proposta e aceitação", "autonomia da vontade", "validade", "vícios da vontade", "cumprimento"],
+"seccoes": [
+{
+"titulo": "Introdução",
+"corpo": "Grande parte da vida em sociedade desenrola-se através de contratos. Comprar pão, arrendar uma casa, aceitar um emprego, contrair um empréstimo — todas estas situações são, juridicamente, contratos. O contrato é o instrumento por excelência através do qual as pessoas regulam os seus interesses e criam vínculos jurídicos entre si.\n\nO contrato pode definir-se como o acordo de duas ou mais vontades, dirigido à produção de efeitos jurídicos, nomeadamente à constituição, modificação ou extinção de relações jurídicas. Este artigo, situado no âmbito do Direito Civil e à luz da tradição jurídica romano-germânica que informa o Código Civil vigente em Angola, tem por objetivo analisar a formação do contrato, os requisitos da sua validade e os seus efeitos, evidenciando o papel fundamental que desempenha na segurança e na previsibilidade das relações sociais e económicas."
+},
+{
+"titulo": "A autonomia da vontade e a formação do contrato",
+"corpo": "O contrato assenta no princípio da autonomia privada ou autonomia da vontade: as pessoas são, em regra, livres de contratar ou não contratar, de escolher com quem contratam e de fixar o conteúdo dos seus contratos, dentro dos limites da lei, da ordem pública e dos bons costumes. Desta autonomia decorre a liberdade contratual, um dos pilares do direito privado.\n\nA formação do contrato resulta, tipicamente, do encontro de duas declarações de vontade: a proposta e a aceitação. A proposta é a declaração através da qual uma parte manifesta a vontade de contratar em determinados termos, de modo suficientemente completo e firme. A aceitação é a declaração de concordância da outra parte com os termos da proposta. Quando a aceitação corresponde à proposta, forma-se o acordo e o contrato considera-se concluído. Se a resposta introduz alterações, não vale como aceitação, mas como nova proposta (contraproposta). O momento e o lugar da conclusão do contrato têm relevância prática, designadamente para determinar quando começam a produzir-se os seus efeitos."
+},
+{
+"titulo": "Requisitos de validade",
+"corpo": "Para que um contrato seja válido e produza plenamente os seus efeitos, deve reunir determinados requisitos. Em primeiro lugar, a capacidade das partes: quem contrata deve ter capacidade jurídica para o fazer; os contratos celebrados por incapazes, como os menores, estão sujeitos a regime especial de proteção. Em segundo lugar, o consentimento, que deve ser livre e esclarecido; a vontade deve formar-se e manifestar-se sem vícios. Em terceiro lugar, o objeto, que deve ser física e legalmente possível, determinado ou determinável, e conforme à lei e à ordem pública. Em quarto lugar, quando a lei o exija, a forma: embora vigore em regra o princípio da liberdade de forma, certos contratos, pela sua importância, só são válidos se observarem uma forma especial, como a escritura pública na compra e venda de imóveis.\n\nA falta de um requisito essencial afeta a validade do contrato, podendo determinar a sua nulidade ou anulabilidade, consoante a gravidade e o interesse protegido."
+},
+{
+"titulo": "Vícios da vontade e efeitos do contrato",
+"corpo": "O consentimento pode estar viciado, isto é, a vontade pode formar-se de modo defeituoso. A doutrina identifica vícios da vontade como o erro (falsa representação da realidade), o dolo (erro provocado intencionalmente pela outra parte através de artifícios enganosos), e a coação (declaração obtida sob ameaça ilícita). A verificação de um vício da vontade pode conduzir à anulação do contrato, protegendo-se quem contratou de forma não verdadeiramente livre ou esclarecida.\n\nQuanto aos efeitos, vigora um princípio fundamental: o contrato deve ser pontualmente cumprido, e só pode modificar-se ou extinguir-se por mútuo consentimento das partes ou nos casos admitidos por lei. É a expressão da força obrigatória do contrato, tradicionalmente resumida na fórmula segundo a qual os contratos devem ser cumpridos. O contrato produz efeitos entre as partes, gerando para elas direitos e obrigações. Quando uma parte não cumpre — por não realizar a prestação, cumpri-la mal ou com atraso —, incorre em responsabilidade, podendo a outra parte exigir o cumprimento, resolver o contrato ou reclamar indemnização pelos danos sofridos."
+},
+{
+"titulo": "Conclusão",
+"corpo": "O contrato é o instrumento jurídico central da vida económica e social e a expressão maior da autonomia privada. Vimos que se forma pelo encontro da proposta e da aceitação, que a sua validade depende da capacidade das partes, de um consentimento livre e esclarecido, de um objeto lícito e da forma legalmente exigida, e que produz efeitos vinculativos que devem ser pontualmente cumpridos.\n\nO regime dos vícios da vontade e da responsabilidade por incumprimento revela a preocupação do Direito em conciliar a liberdade de contratar com a proteção da confiança e da justiça. Ao assegurar que os acordos são levados a sério e que quem não cumpre responde pelas suas faltas, o direito dos contratos confere segurança e previsibilidade às relações entre as pessoas, sendo condição indispensável ao funcionamento de qualquer economia e de qualquer sociedade organizada."
+}
+],
+"referencias": [
+"Código Civil (de raiz romano-germânica, vigente em Angola).",
+"VARELA, João de Matos Antunes — Das Obrigações em Geral.",
+"CORDEIRO, António Menezes — Tratado de Direito Civil.",
+"PINTO, Carlos Alberto da Mota — Teoria Geral do Direito Civil."
+],
+"aliases": ["Formação do contrato", "Proposta e aceitação", "Vícios da vontade", "Liberdade contratual", "Autonomia da vontade", "Requisitos de validade do contrato"]
+},
+{
+"id": "bases-de-dados-relacionais",
+"tipo": "academico",
+"titulo": "Bases de Dados Relacionais: Modelo e Normalização",
+"categoria": "Informática",
+"area": "Engenharia Informática",
+"nivel": "Ensino Superior",
+"resumo": "As bases de dados relacionais são o modelo dominante de organização e gestão de dados nos sistemas de informação. Este artigo apresenta os fundamentos do modelo relacional, proposto por Edgar Codd em 1970 — as noções de tabela, tupla, atributo e chave —, introduz a linguagem SQL como meio de manipulação dos dados e explica o processo de normalização, que elimina redundâncias e anomalias através das formas normais. Discutem-se ainda os conceitos de integridade e de chave estrangeira, concluindo-se que um bom desenho relacional é essencial para a fiabilidade, a consistência e o desempenho dos sistemas de informação.",
+"palavras_chave": ["base de dados", "modelo relacional", "SQL", "normalização", "chave primária", "integridade"],
+"seccoes": [
+{
+"titulo": "Introdução",
+"corpo": "Vivemos na era dos dados. Empresas, hospitais, escolas, bancos e administrações públicas dependem da capacidade de armazenar, organizar e recuperar grandes quantidades de informação de forma fiável. É essa a função das bases de dados, e o modelo que se tornou dominante para as construir é o modelo relacional.\n\nUma base de dados é um conjunto organizado de dados relacionados entre si, gerido por um sistema de gestão de base de dados (SGBD). Este artigo tem por objetivo apresentar os fundamentos do modelo relacional, a linguagem SQL utilizada para o manipular e o processo de normalização, que assegura a qualidade da estrutura dos dados. Trata-se de conhecimentos essenciais para qualquer estudante de informática e para todos os que trabalham com sistemas de informação."
+},
+{
+"titulo": "O modelo relacional",
+"corpo": "O modelo relacional foi proposto em 1970 pelo investigador britânico Edgar F. Codd, num artigo que revolucionou a forma de conceber as bases de dados. A sua ideia central é simples e poderosa: organizar os dados em tabelas, também chamadas relações.\n\nCada tabela é composta por linhas e colunas. As colunas correspondem aos atributos (por exemplo, numa tabela de estudantes: número, nome, curso, data de nascimento). As linhas, chamadas tuplas ou registos, correspondem a cada ocorrência concreta (um estudante específico). Cada tabela deve possuir uma chave primária, um atributo (ou conjunto de atributos) que identifica de forma única cada linha — como o número do estudante, que não se repete. A relação entre tabelas estabelece-se através de chaves estrangeiras: um atributo numa tabela que referencia a chave primária de outra, ligando, por exemplo, a tabela de inscrições à tabela de estudantes. Esta estrutura simples permite representar dados complexos e as relações entre eles de forma clara e consistente."
+},
+{
+"titulo": "A linguagem SQL",
+"corpo": "Para criar, consultar e manipular bases de dados relacionais utiliza-se a linguagem SQL (Structured Query Language), que se tornou o padrão universal. A SQL permite realizar as operações fundamentais sobre os dados.\n\nAs instruções mais comuns incluem SELECT, para consultar e recuperar dados segundo critérios definidos; INSERT, para inserir novos registos; UPDATE, para atualizar registos existentes; e DELETE, para eliminar registos. Existem ainda instruções para definir a estrutura, como CREATE TABLE, que cria uma tabela e define os seus atributos. Uma das grandes vantagens da SQL é o seu carácter declarativo: o utilizador indica o que pretende obter, e não como o computador deve obtê-lo. Por exemplo, uma única instrução SELECT pode juntar dados de várias tabelas relacionadas e filtrar apenas os registos que satisfazem determinada condição, deixando ao SGBD a tarefa de executar a consulta da forma mais eficiente."
+},
+{
+"titulo": "Integridade e normalização",
+"corpo": "Uma base de dados bem construída deve garantir a integridade dos dados, isto é, a sua correção e consistência. A integridade de entidade exige que a chave primária seja única e não nula; a integridade referencial exige que uma chave estrangeira aponte sempre para um registo existente, evitando referências órfãs. Estas regras impedem, por exemplo, que se registe uma inscrição de um estudante que não existe.\n\nA normalização é o processo de organizar os atributos e as tabelas de forma a reduzir a redundância e a evitar anomalias de inserção, atualização e eliminação. Realiza-se por etapas, as formas normais. A primeira forma normal exige que cada campo contenha apenas valores atómicos, sem grupos repetidos. A segunda forma normal elimina dependências parciais da chave. A terceira forma normal elimina dependências transitivas, garantindo que os atributos não-chave dependem apenas da chave primária. Uma base de dados normalizada evita, por exemplo, ter de repetir os dados de um curso em cada linha de estudante — informação que, guardada num só lugar, é mais fácil de manter coerente e atualizada."
+},
+{
+"titulo": "Conclusão",
+"corpo": "As bases de dados relacionais constituem o alicerce dos sistemas de informação modernos. Assentes no modelo proposto por Codd, organizam a informação em tabelas relacionadas por chaves, manipuláveis através da linguagem SQL, e a sua qualidade depende de um bom desenho, orientado pela normalização e pelas regras de integridade.\n\nUm modelo bem normalizado reduz redundâncias, previne inconsistências e facilita a manutenção; as regras de integridade garantem a fiabilidade dos dados; a linguagem SQL permite explorá-los de forma poderosa e flexível. Dominar estes fundamentos é indispensável para quem desenvolve ou administra sistemas de informação — competência cada vez mais procurada também nos PALOP, à medida que instituições e empresas se digitalizam e passam a depender da boa gestão dos seus dados."
+}
+],
+"referencias": [
+"CODD, Edgar F. — A Relational Model of Data for Large Shared Data Banks (1970).",
+"ELMASRI, R.; NAVATHE, S. — Fundamentals of Database Systems.",
+"DATE, C. J. — An Introduction to Database Systems.",
+"SILBERSCHATZ, A.; KORTH, H.; SUDARSHAN, S. — Database System Concepts."
+],
+"aliases": ["Modelo relacional", "SQL", "Normalização de bases de dados", "Chave primária", "Chave estrangeira", "Formas normais"]
+}
+]

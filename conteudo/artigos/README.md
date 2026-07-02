@@ -32,12 +32,22 @@ python3 ferramentas/gerar_zim.py            # cria tyatt_pt.zim na raiz
 
 O `tyatt_pt.zim` abre no assistente (`assistente.html`), no Kiwix ou na app TYATT.
 
+## Dois formatos
+
+- **Simples** (`corpo`): artigos práticos curtos-médios (Saúde, ofícios, etc.).
+- **Académico** (`tipo: "academico"`): artigos universitários completos, com
+  `resumo`, `palavras_chave`, `seccoes[]` (introdução, desenvolvimento,
+  conclusão) e `referencias[]`. Ver `conteudo/plano-academico.md`.
+
 ## Progresso
 
-| Lote | Categoria | Artigos |
-|------|-----------|---------|
+| Lote | Área | Artigos |
+|------|------|---------|
 | `saude-lote-01.json` | Saúde — primeiros socorros | 15 |
 | `saude-lote-02.json` | Saúde — doenças principais | 15 |
+| `academico-lote-01.json` | Direito, Gestão, Enfermagem | 3 |
+| `academico-lote-02.json` | Economia, Contabilidade, Psicologia, Direito, Informática | 5 |
 
-Total atual: **30 artigos**. Meta: ~4.822 (ver `conteudo/plano.md`).
-Próximos lotes seguem a ordem de prioridade do plano.
+Total atual: **38 artigos** (30 práticos + 8 académicos completos).
+Metas: ~4.822 práticos (`plano.md`) e programa académico de longo prazo
+(`plano-academico.md`). Próximos lotes seguem a prioridade dos planos.
