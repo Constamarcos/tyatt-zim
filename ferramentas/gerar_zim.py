@@ -146,11 +146,22 @@ def construir_indice(artigos):
                 tf[termo] = tf.get(termo, 0) + peso
         dl = sum(tf.values()) or 1
         comprimentos.append(dl)
+        # "assunto" = TEMA PRINCIPAL do artigo (título + área + atalhos), usado
+        # pelo assistente para não devolver artigos que só mencionam o termo.
+        # Não inclui as palavras-chave de propósito: estas podem citar lugares
+        # ou conceitos secundários (ex.: «Constituição de Angola») que fariam
+        # uma pesquisa por «Angola» casar com um artigo de Direito.
+        assunto = _normalizar(" ".join([
+            artigo["titulo"],
+            artigo.get("area") or artigo.get("categoria", ""),
+            " ".join(aliases_de(artigo)),
+        ]))
         docs.append([
             caminho_de(artigo),
             artigo["titulo"],
             artigo.get("area") or artigo.get("categoria", ""),
             dl,
+            assunto,
         ])
         for termo, freq in tf.items():
             postings.setdefault(termo, []).append([doc_id, freq])

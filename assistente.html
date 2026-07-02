@@ -526,6 +526,7 @@ function pesquisarTexto(zim, consulta){
     .map(([docId, score]) => ({
       docId, score, cobertos: cobertos.get(docId),
       caminho: ix.d[docId][0], titulo: ix.d[docId][1], area: ix.d[docId][2],
+      assunto: ix.d[docId][4] || "",
     }))
     .sort((a, b) => b.score - a.score || b.cobertos - a.cobertos);
   return { termos, nTermos: termos.length, resultados };
@@ -837,8 +838,30 @@ async function responderInteligente(texto, q){
   resultados = await reordenar(resultados, texto);
 
   ultimaPergunta = { texto, q, termos: busca.termos };
+  const top = resultados[0];
 
-  const top = resultados[0], segundo = resultados[1];
+  // "É mesmo sobre isto?" — para uma pesquisa de UM só tema, o artigo do topo
+  // tem de TRATAR desse tema (estar no seu assunto), não apenas mencioná-lo.
+  // Evita que «Angola» devolva um artigo de Direito que só cita Angola.
+  const focoTermos = tokensBusca(q.foco);
+  if ((q.tipo === "DEFINICAO" || q.tipo === "TOPICO") && focoTermos.length === 1){
+    const alvo = expandirTermos(focoTermos);
+    const assunto = top.assunto || normalizar(top.titulo + " " + (top.area || ""));
+    if (!alvo.some(t => assunto.includes(t))){
+      let html = "<p>Não tenho um artigo dedicado a <b>«" + escapar(q.foco) + "»</b> neste ficheiro. 🙂</p>";
+      const mencoes = resultados.filter(d => (d.assunto || "") && true).slice(0, 5);
+      if (mencoes.length){
+        html += "<p style='font-size:.9em;margin:6px 0 2px'>Alguns artigos mencionam-no — queres abrir algum?</p>";
+        html += '<div class="chips-sugestao">' + mencoes.map(d =>
+          "<button onclick=\"responderDoArtigo('" + d.caminho.replace(/'/g, "\\'") + "')\">" + escapar(d.titulo) + "</button>").join("") + "</div>";
+      }
+      html += "<p style='font-size:.85em;color:#666;margin-top:8px'>Se este tema devia existir, ainda não foi acrescentado ao TYATT.</p>";
+      adicionarMsg("assistente", html);
+      return;
+    }
+  }
+
+  const segundo = resultados[1];
   const confiante = top.cobertos >= Math.max(2, Math.ceil(busca.nTermos * 0.5)) || busca.nTermos <= 1;
   const ambiguo = segundo && segundo.score >= 0.82 * top.score &&
                   normalizar(segundo.titulo) !== normalizar(top.titulo);
