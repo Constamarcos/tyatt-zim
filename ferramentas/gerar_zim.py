@@ -26,17 +26,65 @@ def caminho_de(artigo):
     return limpo or "artigo"
 
 
+ARTIGOS_INICIAIS = ("a ", "o ", "as ", "os ", "um ", "uma ", "uns ", "umas ")
+
+
+def aliases_de(artigo):
+    """Atalhos de pesquisa de um artigo: os aliases declarados mais variantes
+    automáticas do título — sem o artigo inicial e sem o subtítulo — para que
+    títulos como «A Separação de Poderes no Estado de Direito» sejam
+    encontrados por «separação de poderes»."""
+    atalhos = list(artigo.get("aliases", []))
+    titulo = artigo["titulo"]
+    variantes = {titulo}
+    # parte principal, antes de um separador de subtítulo
+    principal = re.split(r"\s+[—:–-]\s+", titulo, maxsplit=1)[0]
+    variantes.add(principal)
+    for v in list(variantes):
+        baixo = v.lower()
+        for art in ARTIGOS_INICIAIS:
+            if baixo.startswith(art):
+                atalhos.append(v[len(art):])
+                break
+    return atalhos
+
+
+def paragrafos_html(texto):
+    return "".join(f"<p>{p.strip()}</p>" for p in texto.split("\n") if p.strip())
+
+
 def html_de(artigo):
-    paragrafos = "".join(
-        f"<p>{p.strip()}</p>" for p in artigo["corpo"].split("\n") if p.strip()
-    )
+    """Renderiza um artigo em HTML. Suporta dois formatos:
+    - simples: campo 'corpo' com o texto todo;
+    - académico: 'resumo', 'palavras_chave', 'seccoes'[] e 'referencias'[].
+    O primeiro conteúdo visível (resumo ou 1.º parágrafo) é a resposta direta
+    que o assistente lê, por isso vem sempre no topo.
+    """
+    partes = [f"<h1>{artigo['titulo']}</h1>"]
+    area = artigo.get("area") or artigo.get("categoria", "")
+    nivel = artigo.get("nivel")
+    cabecalho = f"Área: {area}" + (f" · Nível: {nivel}" if nivel else "")
+    partes.append(f"<p><i>{cabecalho}</i></p>")
+
+    if artigo.get("tipo") == "academico":
+        if artigo.get("resumo"):
+            partes.append("<h2>Resumo</h2>" + paragrafos_html(artigo["resumo"]))
+        if artigo.get("palavras_chave"):
+            chaves = ", ".join(artigo["palavras_chave"])
+            partes.append(f"<p><b>Palavras-chave:</b> {chaves}</p>")
+        for seccao in artigo.get("seccoes", []):
+            partes.append(f"<h2>{seccao['titulo']}</h2>" + paragrafos_html(seccao["corpo"]))
+        if artigo.get("referencias"):
+            itens = "".join(f"<li>{r}</li>" for r in artigo["referencias"])
+            partes.append(f"<h2>Referências e leituras recomendadas</h2><ul>{itens}</ul>")
+    else:
+        partes.append(paragrafos_html(artigo["corpo"]))
+
     return (
         "<html><head><meta charset='utf-8'>"
         f"<title>{artigo['titulo']}</title></head><body>"
-        f"<h1>{artigo['titulo']}</h1>"
-        f"<p><i>Categoria: {artigo['categoria']}</i></p>"
-        f"{paragrafos}"
-        "<hr><p><small>TYATT — conteúdo original, offline.</small></p>"
+        + "".join(partes)
+        + "<hr><p><small>TYATT — conteúdo original, offline.</small></p>"
         "</body></html>"
     )
 
@@ -88,12 +136,13 @@ def principal():
             c.add_item(ArtigoItem(artigo))
 
         # aliases → redirecionamentos (como as redireções da Wikipédia):
-        # permitem que termos populares ("tensão alta") encontrem o artigo
-        # ("Hipertensão"). O assistente segue-os automaticamente.
+        # permitem que termos populares ("tensão alta") ou o título sem o artigo
+        # inicial ("Separação de Poderes...") encontrem o artigo. O assistente
+        # segue-os automaticamente.
         redirecoes, caminhos = 0, set(caminho_de(a) for a in artigos)
         for artigo in artigos:
             destino = caminho_de(artigo)
-            for alias in artigo.get("aliases", []):
+            for alias in aliases_de(artigo):
                 origem = unicodedata.normalize("NFD", alias).encode("ascii", "ignore").decode()
                 origem = re.sub(r"[^A-Za-z0-9]+", "_", origem).strip("_")
                 if origem and origem not in caminhos:
