@@ -469,7 +469,8 @@ function extrairResposta(tipo, paragrafos, foco){
 // títulos: procura em TODO o texto, pesa a relevância (BM25), percebe a
 // pergunta e extrai a frase que responde — e questiona-se sobre a confiança.
 
-const STOP = new Set(("de da do das dos e a o as os um uma uns umas em no na nos nas por para com que " +
+const STOP = new Set(("de da do das dos e a o as os um uma uns umas em no na nos nas num numa nuns numas " +
+  "dum duma duns dumas pelo pela pelos pelas por para com que " +
   "se ao aos ou mas mais muito pouco nao sim ja la aqui ali isto isso aquilo este esta esse essa aquele " +
   "aquela seu sua seus suas meu minha teu tua nosso nossa dele dela deles delas qual quais quem quando " +
   "onde quanto quanta quantos quantas porque como ser sao foi era eram sendo tem ter ha haver estar esta " +
@@ -533,7 +534,7 @@ function pesquisarTexto(zim, consulta){
 }
 
 // extrai a melhor resposta de um artigo, dada a pergunta e os seus termos
-function extrairRespostaInteligente(paragrafos, termosStem, tipo){
+function extrairRespostaInteligente(paragrafos, termosStem, tipo, assunto){
   if (!paragrafos.length) return null;
 
   // factoides (quando/onde/quanto/capital): procurar a frase com o padrão certo
@@ -546,19 +547,30 @@ function extrairRespostaInteligente(paragrafos, termosStem, tipo){
     for (const f of dividirFrases(par)) frases.push(f);
   if (!frases.length) return null;
 
-  let melhor = null, melhorPont = 0;
+  // Um termo que é o próprio ASSUNTO do artigo (ex.: «angola» no artigo Angola)
+  // aparece em todo o lado e discrimina pouco; um subtópico específico
+  // (ex.: «bandeira») vale mais para escolher a frase certa.
+  const assuntoNorm = assunto || "";
+  const peso = t => (assuntoNorm.includes(t) ? 0.3 : 1);
+
+  let melhor = null, melhorPont = 0, melhorToks = null;
   frases.forEach((f, i) => {
-    const toks = new Set(tokensBusca(f));
-    let cob = 0;
-    for (const t of termosStem) if (toks.has(t)) cob++;
-    const pont = cob - i * 0.03;               // ligeira preferência pelo início
-    if (pont > melhorPont){ melhorPont = pont; melhor = f; }
+    const conj = new Set(tokensBusca(f));
+    let s = 0;
+    for (const t of termosStem) if (conj.has(t)) s += peso(t);
+    const pont = s - i * 0.03;                  // ligeira preferência pelo início
+    if (pont > melhorPont){ melhorPont = pont; melhor = f; melhorToks = conj; }
   });
 
-  // se uma frase cobre 2+ termos e não é logo a primeira, vale como resposta
-  // direta; senão devolve-se a introdução/resumo (1.º parágrafo).
-  if (melhor && melhorPont >= 2 && melhor !== frases[0])
-    return { texto: melhor, direta: true };
+  // A melhor frase vale como resposta direta se: cobre bem os termos, OU traz um
+  // termo específico que a introdução não tem e que não é o tema do artigo
+  // (ex.: «bandeira»). Caso contrário, devolve-se a introdução/resumo.
+  if (melhor && melhor !== frases[0]){
+    const introToks = new Set(tokensBusca(paragrafos[0]));
+    const termoNovo = termosStem.some(t =>
+      melhorToks.has(t) && !introToks.has(t) && t.length >= 4 && !assuntoNorm.includes(t));
+    if (melhorPont >= 2 || termoNovo) return { texto: melhor, direta: true };
+  }
   const intro = paragrafos[0];
   return { texto: intro.length > 700 ? intro.slice(0, 700).replace(/\s+\S*$/, "") + "…" : intro, direta: false };
 }
@@ -880,7 +892,7 @@ async function mostrarResposta(caminho, q, termos, opcoes = {}){
   const blob = await zim.lerBlob(ent.cluster, ent.blob);
   const doc = new DOMParser().parseFromString(dec.decode(blob), "text/html");
   const paragrafos = extrairParagrafos(doc);
-  const resposta = extrairRespostaInteligente(paragrafos, termos, q.tipo);
+  const resposta = extrairRespostaInteligente(paragrafos, termos, q.tipo, normalizar(ent.titulo + " " + (ent.area || "")));
   definirContexto(ent, doc, paragrafos);
 
   let html = "";

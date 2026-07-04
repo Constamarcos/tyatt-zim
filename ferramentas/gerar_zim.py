@@ -17,7 +17,8 @@ from libzim.writer import Creator, Item, StringProvider, Hint
 # ── Motor de pesquisa: tokenização partilhada com o assistente (JS) ──────────
 # A mesma normalização tem de existir dos dois lados, senão a pesquisa falha.
 STOPWORDS = set(
-    "de da do das dos e a o as os um uma uns umas em no na nos nas por para com que "
+    "de da do das dos e a o as os um uma uns umas em no na nos nas num numa nuns numas "
+    "dum duma duns dumas pelo pela pelos pelas por para com que "
     "se ao aos ou mas mais muito pouco nao sim ja la aqui ali isto isso aquilo este "
     "esta esse essa aquele aquela seu sua seus suas meu minha teu tua nosso nossa dele "
     "dela deles delas qual quais quem quando onde quanto quanta quantos quantas porque "
