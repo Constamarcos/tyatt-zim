@@ -12,7 +12,7 @@ import unicodedata
 from datetime import date
 from pathlib import Path
 
-from libzim.writer import Creator, Item, StringProvider, Hint
+from libzim.writer import Creator, Item, StringProvider, FileProvider, Hint
 
 # ── Motor de pesquisa: tokenização partilhada com o assistente (JS) ──────────
 # A mesma normalização tem de existir dos dois lados, senão a pesquisa falha.
@@ -42,7 +42,25 @@ def _tokens(s):
 
 RAIZ = Path(__file__).resolve().parent.parent
 PASTA_ARTIGOS = RAIZ / "conteudo" / "artigos"
+PASTA_IMAGENS = RAIZ / "conteudo" / "imagens"
 SAIDA = Path(sys.argv[1]) if len(sys.argv) > 1 else RAIZ / "tyatt_pt.zim"
+
+# imagem opcional por artigo: conteudo/imagens/<id>.<ext> (offline, sem dados)
+MIMES_IMAGEM = {"webp": "image/webp", "png": "image/png", "jpg": "image/jpeg",
+                "jpeg": "image/jpeg", "gif": "image/gif"}
+
+
+def imagem_de(artigo):
+    """Devolve (caminho_no_zim, ficheiro, mimetype) se existir uma imagem para
+    o artigo (por id/caminho), senão None. Casa por nome de ficheiro."""
+    if not PASTA_IMAGENS.is_dir():
+        return None
+    base = caminho_de(artigo)
+    for ext, mime in MIMES_IMAGEM.items():
+        f = PASTA_IMAGENS / f"{base}.{ext}"
+        if f.is_file():
+            return (f"img/{base}.{ext}", f, mime)
+    return None
 
 
 def caminho_de(artigo):
@@ -92,6 +110,8 @@ def html_de(artigo):
     nivel = artigo.get("nivel")
     cabecalho = f"Área: {area}" + (f" · Nível: {nivel}" if nivel else "")
     partes.append(f"<p><i>{cabecalho}</i></p>")
+    if artigo.get("_imagem"):
+        partes.append(f"<p><img src='{artigo['_imagem']}' alt='{artigo['titulo']}'></p>")
 
     if artigo.get("tipo") == "academico":
         if artigo.get("resumo"):
@@ -163,6 +183,7 @@ def construir_indice(artigos):
             artigo.get("area") or artigo.get("categoria", ""),
             dl,
             assunto,
+            artigo.get("_imagem", ""),   # caminho da imagem no ZIM (ou vazio)
         ])
         for termo, freq in tf.items():
             postings.setdefault(termo, []).append([doc_id, freq])
@@ -215,6 +236,29 @@ class ArtigoItem(Item):
         return {Hint.FRONT_ARTICLE: True}
 
 
+class ImagemItem(Item):
+    """Uma imagem (webp/png/jpg) associada a um artigo, embutida no ZIM."""
+
+    def __init__(self, caminho_zim, ficheiro, mime):
+        super().__init__()
+        self._caminho, self._ficheiro, self._mime = caminho_zim, ficheiro, mime
+
+    def get_path(self):
+        return self._caminho
+
+    def get_title(self):
+        return ""
+
+    def get_mimetype(self):
+        return self._mime
+
+    def get_contentprovider(self):
+        return FileProvider(str(self._ficheiro))
+
+    def get_hints(self):
+        return {Hint.FRONT_ARTICLE: False}
+
+
 def principal():
     artigos, vistos = [], set()
     for ficheiro in sorted(PASTA_ARTIGOS.glob("*.json")):
@@ -229,6 +273,16 @@ def principal():
     if not artigos:
         sys.exit("Nenhum artigo encontrado em conteudo/artigos/")
 
+    # associa a imagem (se existir) a cada artigo, por nome de ficheiro (slug)
+    imagens, com_imagem = [], 0
+    for artigo in artigos:
+        info = imagem_de(artigo)
+        if info:
+            caminho_zim, fich, mime = info
+            artigo["_imagem"] = caminho_zim
+            imagens.append((caminho_zim, fich, mime))
+            com_imagem += 1
+
     with Creator(str(SAIDA)).config_indexing(True, "por") as c:
         c.set_mainpath(caminho_de(artigos[0]))
         c.add_metadata("Title", "TYATT — Conhecimento offline")
@@ -239,6 +293,8 @@ def principal():
         c.add_metadata("Description", "Base de conhecimento original TYATT em português")
         for artigo in artigos:
             c.add_item(ArtigoItem(artigo))
+        for caminho_zim, fich, mime in imagens:
+            c.add_item(ImagemItem(caminho_zim, fich, mime))
 
         # índice de texto completo embutido (pesquisa inteligente do assistente)
         c.add_item(IndiceItem(construir_indice(artigos)))
@@ -259,7 +315,8 @@ def principal():
                     redirecoes += 1
 
     tamanho = SAIDA.stat().st_size
-    print(f"{SAIDA.name}: {len(artigos)} artigos + {redirecoes} atalhos, {tamanho/1024:.0f} KB")
+    print(f"{SAIDA.name}: {len(artigos)} artigos + {redirecoes} atalhos + "
+          f"{com_imagem} imagens, {tamanho/1024:.0f} KB")
 
 
 if __name__ == "__main__":

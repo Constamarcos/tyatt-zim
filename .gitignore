@@ -1,2 +1,6 @@
 # Ficheiro ZIM gerado (recriável com ferramentas/gerar_zim.py)
 tyatt_pt.zim
+conteudo/imagens/*.webp
+conteudo/imagens/*.png
+conteudo/imagens/*.jpg
+conteudo/imagens/*.jpeg

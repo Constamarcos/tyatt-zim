@@ -36,6 +36,7 @@
   .msg.assistente{align-self:flex-start;background:#fff;border:1px solid var(--borda);border-bottom-left-radius:4px;white-space:normal}
   .msg.assistente p{margin:6px 0}
   .msg.assistente .fonte{font-size:.78em;color:var(--cinza);margin-top:8px;border-top:1px solid #eee;padding-top:6px}
+  .msg.assistente img.img-resposta{max-width:100%;max-height:220px;border-radius:10px;margin-bottom:8px;display:block}
   .msg.assistente mark{background:var(--marca);padding:0 2px;border-radius:2px}
   .acoes{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
   .acoes button{background:var(--verde-claro);border:1px solid var(--verde);color:var(--verde-escuro);
@@ -529,7 +530,7 @@ function pesquisarTexto(zim, consulta){
     .map(([docId, score]) => ({
       docId, score, cobertos: cobertos.get(docId),
       caminho: ix.d[docId][0], titulo: ix.d[docId][1], area: ix.d[docId][2],
-      assunto: ix.d[docId][4] || "",
+      assunto: ix.d[docId][4] || "", imagem: ix.d[docId][5] || "",
     }))
     .sort((a, b) => b.score - a.score || b.cobertos - a.cobertos);
   return { termos, nTermos: termos.length, resultados };
@@ -884,7 +885,23 @@ async function responderInteligente(texto, q){
     hedge: !confiante,
     alternativas: resultados.slice(1, 5),
     perguntarSeAmbiguo: ambiguo,
+    imagem: top.imagem,
   });
+}
+
+// imagens já mostradas em cartões de resposta (libertadas ao fazer nova pergunta)
+let urlsResposta = [];
+async function urlDaImagem(caminho){
+  if (!caminho) return null;
+  try {
+    const ent = await zim.procurarCaminho("C", caminho);
+    if (!ent || ent.redirect !== null) return null;
+    const dados = await zim.lerBlob(ent.cluster, ent.blob);
+    const url = URL.createObjectURL(new Blob([dados], { type: zim.mimes[ent.mime] || "image/webp" }));
+    urlsResposta.push(url);
+    if (urlsResposta.length > 20) URL.revokeObjectURL(urlsResposta.shift());
+    return url;
+  } catch { return null; }
 }
 
 // abre um artigo pelo caminho, extrai a resposta e mostra-a
@@ -898,6 +915,8 @@ async function mostrarResposta(caminho, q, termos, opcoes = {}){
   definirContexto(ent, doc, paragrafos);
 
   let html = "";
+  const urlImg = await urlDaImagem(opcoes.imagem);
+  if (urlImg) html += "<img class='img-resposta' src='" + urlImg + "' alt='" + escapar(ent.titulo) + "'>";
   if (opcoes.perguntarSeAmbiguo)
     html += "<p>Encontrei mais do que um tema parecido — mostro-te o mais provável; se não for, escolhe em baixo. 🤔</p>";
   else if (opcoes.hedge)
