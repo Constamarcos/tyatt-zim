@@ -41,13 +41,23 @@ O `tyatt_pt.zim` abre no assistente (`assistente.html`), no Kiwix ou na app TYAT
 
 ## Progresso
 
-| Lote | Área | Artigos |
-|------|------|---------|
-| `saude-lote-01.json` | Saúde — primeiros socorros | 15 |
-| `saude-lote-02.json` | Saúde — doenças principais | 15 |
-| `academico-lote-01.json` | Direito, Gestão, Enfermagem | 3 |
-| `academico-lote-02.json` | Economia, Contabilidade, Psicologia, Direito, Informática | 5 |
+| Área | Artigos |
+|------|---------|
+| Saúde (socorros, doenças, materno-infantil, diabetes, falciforme) | 37 |
+| Angola (visão geral, geografia, história, 21 províncias, cultura, símbolos, kwanza) | 34 |
+| Ciências (Física, Química, Biologia) | 12 |
+| Académico universitário (Direito, Gestão, Economia, Enfermagem, Contabilidade, Psicologia, Informática, Saúde Pública) | 10 |
+| Matemática | 10 |
+| Português | 5 |
+| História/Geografia do mundo | 5 |
+| Finanças e empreendedorismo | 5 |
+| Agricultura | 5 |
+| Tecnologia | 6 |
+| Cidadania e documentos | 6 |
+| Nutrição | 4 |
+| Ofícios | 4 |
+| Educação e estudo | 4 |
 
-Total atual: **38 artigos** (30 práticos + 8 académicos completos).
+Total atual: **147 artigos completos** (137 práticos + 10 académicos).
 Metas: ~4.822 práticos (`plano.md`) e programa académico de longo prazo
 (`plano-academico.md`). Próximos lotes seguem a prioridade dos planos.

@@ -1,0 +1,80 @@
+[
+{
+"id": "economia-angolana-petroleo",
+"tipo": "academico",
+"titulo": "A Economia Angolana e a Dependência do Petróleo",
+"categoria": "Economia",
+"area": "Economia do Desenvolvimento",
+"nivel": "Ensino Superior",
+"resumo": "A economia angolana caracteriza-se por uma forte dependência do setor petrolífero, que representa a maior parte das exportações e das receitas do Estado. Este artigo analisa as origens e as consequências dessa dependência, discutindo o fenómeno conhecido como «doença holandesa» e a vulnerabilidade da economia às variações do preço internacional do petróleo. Examina-se ainda a necessidade e os desafios da diversificação económica, nomeadamente através da agricultura, da indústria e dos serviços, concluindo-se que a redução da dependência petrolífera é condição essencial para um desenvolvimento sustentável e inclusivo de Angola.",
+"palavras_chave": ["Angola", "petróleo", "diversificação", "doença holandesa", "desenvolvimento", "exportações"],
+"seccoes": [
+{
+"titulo": "Introdução",
+"corpo": "Desde a descoberta e exploração das suas reservas de petróleo, Angola tornou-se um dos maiores produtores de petróleo de África. Este recurso trouxe importantes receitas, mas também moldou a estrutura da economia nacional de uma forma que hoje constitui um dos seus maiores desafios: a dependência excessiva de um único produto.\n\nO objetivo deste artigo é analisar a natureza e as consequências da dependência da economia angolana em relação ao petróleo, bem como discutir os caminhos para a sua diversificação. Trata-se de um tema central para a compreensão da economia de Angola e para o debate sobre o seu futuro desenvolvimento."
+},
+{
+"titulo": "A estrutura da economia angolana",
+"corpo": "A economia angolana assenta, em larga medida, no setor petrolífero. O petróleo representa historicamente a maior parte das exportações do país e uma fração muito significativa das receitas fiscais do Estado e do Produto Interno Bruto. Isto significa que grande parte do dinheiro que entra no país e que financia o Orçamento Geral do Estado provém da venda de um único produto ao exterior.\n\nEm contrapartida, setores como a agricultura — que já foi próspera e chegou a fazer de Angola um exportador de café — a indústria transformadora e outros serviços produtivos têm um peso reduzido face ao seu potencial. O país importa grande parte dos bens que consome, incluindo alimentos, o que aumenta a sua vulnerabilidade externa e a exposição às variações da taxa de câmbio."
+},
+{
+"titulo": "A dependência e a doença holandesa",
+"corpo": "A dependência de um recurso natural abundante pode gerar um fenómeno económico conhecido como «doença holandesa». O termo teve origem na experiência dos Países Baixos após a descoberta de gás natural: as receitas da exportação do recurso valorizam a moeda nacional e concentram a atenção e os investimentos no setor extrativo, tornando os outros setores (agricultura, indústria) menos competitivos e desincentivando a sua produção.\n\nEm Angola, este mecanismo ajuda a explicar por que razão, apesar da riqueza petrolífera, a diversificação tem sido difícil. A abundância de divisas do petróleo tornou frequentemente mais barato importar do que produzir internamente, prejudicando a agricultura e a indústria nacionais.\n\nA esta dinâmica soma-se a chamada «maldição dos recursos», expressão usada por economistas para descrever o paradoxo de países ricos em recursos naturais que, no entanto, apresentam dificuldades de desenvolvimento, devido à dependência, à volatilidade das receitas e a fragilidades institucionais."
+},
+{
+"titulo": "A vulnerabilidade e a necessidade de diversificação",
+"corpo": "A grande consequência da dependência é a vulnerabilidade. Como o preço do petróleo é determinado nos mercados internacionais e sofre grandes oscilações, as receitas de Angola variam fortemente com fatores que o país não controla. Quando o preço do barril cai, como aconteceu em vários períodos, o país enfrenta quebras acentuadas de receitas, desvalorização da moeda, aumento da inflação e dificuldades orçamentais, com impacto direto na vida das populações.\n\nPor isso, a diversificação da economia — isto é, o desenvolvimento de outros setores para além do petróleo — é reconhecida como uma prioridade estratégica. As áreas com maior potencial incluem a agricultura (dado o clima e as terras férteis), a pesca, a indústria transformadora, o turismo e os serviços. Diversificar reduz a vulnerabilidade, cria emprego (o setor petrolífero, sendo intensivo em capital, emprega relativamente poucas pessoas) e promove um crescimento mais inclusivo.\n\nOs desafios da diversificação são, contudo, consideráveis: exigem investimento em infraestruturas (energia, estradas, água), em educação e formação, em crédito à produção, em melhoria do ambiente de negócios e em estabilidade macroeconómica."
+},
+{
+"titulo": "Conclusão",
+"corpo": "A dependência do petróleo é, simultaneamente, a base histórica da economia angolana e o seu principal desafio estrutural. Se, por um lado, o petróleo gerou receitas importantes, por outro criou uma economia vulnerável às variações de um mercado externo e pouco diversificada, com um setor produtivo nacional aquém do seu potencial.\n\nO caminho para um desenvolvimento sustentável passa necessariamente pela diversificação: reduzir o peso do petróleo, revitalizar a agricultura e a indústria, criar emprego e produzir mais internamente. Este processo é exigente e de longo prazo, requerendo investimento, boas políticas e instituições sólidas. Para os estudantes de economia e para os cidadãos angolanos, compreender esta realidade é essencial para participar de forma informada no debate sobre o futuro do país."
+}
+],
+"referencias": [
+"AUTY, Richard — Resource-Based Industrialization: Sowing the Oil in Eight Developing Countries.",
+"SACHS, J.; WARNER, A. — Natural Resource Abundance and Economic Growth.",
+"Banco Nacional de Angola — relatórios económicos.",
+"Documentos oficiais sobre o Plano de Desenvolvimento Nacional de Angola."
+],
+"aliases": ["Dependência do petróleo", "Diversificação económica", "Doença holandesa", "Maldição dos recursos", "Economia de Angola"]
+},
+{
+"id": "determinantes-sociais-da-saude",
+"tipo": "academico",
+"titulo": "Os Determinantes Sociais da Saúde",
+"categoria": "Saúde",
+"area": "Saúde Pública",
+"nivel": "Ensino Superior",
+"resumo": "Os determinantes sociais da saúde são as condições em que as pessoas nascem, crescem, vivem, trabalham e envelhecem, e que influenciam profundamente o seu estado de saúde. Este artigo apresenta o conceito, distingue os determinantes sociais das causas puramente biológicas da doença, e analisa fatores como o rendimento, a educação, o saneamento, o acesso à água potável, a habitação e o acesso aos cuidados de saúde. Sublinha-se que grande parte das desigualdades em saúde tem origem social e é, por isso, evitável, concluindo-se que a promoção da saúde exige ação para além do setor sanitário, com particular relevância para os países em desenvolvimento.",
+"palavras_chave": ["saúde pública", "determinantes sociais", "desigualdades", "prevenção", "saneamento", "educação"],
+"seccoes": [
+{
+"titulo": "Introdução",
+"corpo": "Porque adoecem mais umas pessoas do que outras? A resposta não está apenas nos micróbios ou na genética. A saúde das populações é fortemente influenciada pelas condições sociais e económicas em que as pessoas vivem. Uma criança que cresce sem acesso a água potável, a saneamento e a uma alimentação adequada tem muito maior probabilidade de adoecer do que outra que dispõe dessas condições, independentemente dos cuidados médicos disponíveis.\n\nEste artigo tem por objetivo apresentar o conceito de determinantes sociais da saúde e a sua importância para a saúde pública, evidenciando como fatores sociais explicam grande parte das doenças e das desigualdades em saúde, sobretudo nos países em desenvolvimento."
+},
+{
+"titulo": "O conceito de determinantes sociais da saúde",
+"corpo": "Segundo a Organização Mundial da Saúde, os determinantes sociais da saúde são as condições em que as pessoas nascem, crescem, vivem, trabalham e envelhecem, incluindo o sistema de saúde. Estas condições são, por sua vez, moldadas pela distribuição do dinheiro, do poder e dos recursos.\n\nEste conceito representa uma mudança de olhar: em vez de se centrar apenas na doença e no seu tratamento individual, a saúde pública passa a considerar as causas «a montante» — ou seja, as raízes sociais que fazem adoecer. Costuma falar-se, a este propósito, das «causas das causas»: uma pessoa tem diarreia por causa de uma bactéria (causa imediata), mas bebe água contaminada por causa da falta de saneamento (causa social), que por sua vez resulta da pobreza e de políticas insuficientes."
+},
+{
+"titulo": "Os principais determinantes sociais",
+"corpo": "Diversos fatores sociais influenciam a saúde. O rendimento e a pobreza são determinantes centrais: a pobreza limita o acesso a alimentação adequada, a habitação segura, a água tratada e a cuidados de saúde. A educação, sobretudo das mulheres, está fortemente associada a melhor saúde: mães mais escolarizadas têm filhos mais saudáveis, porque compreendem melhor a prevenção, a nutrição e os sinais de doença.\n\nO acesso a água potável e ao saneamento é decisivo: a sua falta está na origem de doenças como a cólera, a febre tifóide e as diarreias, grandes causas de mortalidade infantil. A habitação e as condições de vida (aglomeração, fumo dos fogões, exposição a vetores como o mosquito da malária) afetam diretamente a saúde. As condições de trabalho, a alimentação, e o acesso e a qualidade dos serviços de saúde completam o quadro.\n\nEstes fatores interligam-se e acumulam-se: uma família pobre tende a somar várias desvantagens ao mesmo tempo, o que agrava o risco de doença."
+},
+{
+"titulo": "Desigualdades em saúde e implicações",
+"corpo": "A principal consequência dos determinantes sociais é a existência de desigualdades em saúde: diferenças sistemáticas no estado de saúde entre grupos sociais. Populações mais pobres, menos escolarizadas ou com pior acesso a serviços adoecem mais e vivem menos anos. O aspeto mais importante é que grande parte destas desigualdades é evitável e, por isso, injusta — não resulta de fatores naturais, mas de condições sociais que poderiam ser diferentes.\n\nA implicação fundamental para a saúde pública é que a promoção da saúde e a prevenção da doença exigem ação muito para além do setor da saúde. Melhorar a saúde das populações passa por garantir água potável e saneamento, promover a educação, combater a pobreza, melhorar a habitação e a nutrição. É a chamada ação intersetorial: a saúde constrói-se também na educação, na agricultura, no urbanismo e na economia.\n\nEsta perspetiva é particularmente relevante para países em desenvolvimento, como Angola e os demais PALOP, onde a melhoria dos determinantes sociais — designadamente o acesso à água, ao saneamento e à educação — tem um potencial enorme para reduzir a doença e salvar vidas, muitas vezes maior do que o investimento apenas em tratamento."
+},
+{
+"titulo": "Conclusão",
+"corpo": "Os determinantes sociais da saúde mostram que a saúde é, em grande medida, um produto das condições sociais em que as pessoas vivem. As doenças não têm apenas causas biológicas, mas raízes sociais — a pobreza, a falta de educação, de água potável e de saneamento — que explicam por que umas populações adoecem muito mais do que outras.\n\nCompreender estes determinantes é essencial para a saúde pública, porque revela que melhorar a saúde exige agir sobre as suas causas sociais, e não apenas tratar os doentes. Para os países em desenvolvimento, investir em água, saneamento, educação e redução da pobreza é investir diretamente na saúde. Reduzir as desigualdades evitáveis em saúde é, mais do que uma questão técnica, uma questão de justiça social."
+}
+],
+"referencias": [
+"Organização Mundial da Saúde — Comissão sobre Determinantes Sociais da Saúde: Relatório Final (2008).",
+"MARMOT, Michael — The Health Gap.",
+"DAHLGREN, G.; WHITEHEAD, M. — Policies and Strategies to Promote Social Equity in Health.",
+"Organização Mundial da Saúde — documentos sobre promoção da saúde."
+],
+"aliases": ["Saúde pública", "Desigualdades em saúde", "Causas sociais da doença", "Promoção da saúde"]
+}
+]
