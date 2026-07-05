@@ -396,7 +396,9 @@ function analisarPergunta(texto){
 
   if (/^(ola|oi|bom dia|boa tarde|boa noite|tudo bem|obrigad|valeu|fixe)/.test(baixo))
     return { tipo: "SAUDACAO" };
-  if (/^(ajuda|help|como (funciona|usar))/.test(baixo))
+  if (/^(ajuda|help|preciso de ajuda|socorro)\b/.test(baixo) ||
+      /^como (funciona|se usa|uso|usar)\s*\??$/.test(baixo) ||
+      /^como (funciona|uso|usar|se usa)\s+(isto|isso|o tyatt|a app|esta app|este assistente|isto tudo)\b/.test(baixo))
     return { tipo: "AJUDA" };
 
   const padroes = [
