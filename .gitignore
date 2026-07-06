@@ -4,3 +4,7 @@ conteudo/imagens/*.webp
 conteudo/imagens/*.png
 conteudo/imagens/*.jpg
 conteudo/imagens/*.jpeg
+
+# Cache de bytecode do Python
+__pycache__/
+*.pyc
