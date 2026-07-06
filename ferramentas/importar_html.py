@@ -82,17 +82,46 @@ class ExtratorHTML(HTMLParser):
         self.partes.append(data)
 
     def resultado(self):
-        titulo = (self.titulo_h1 or self.titulo_head).strip()
+        titulo = _limpar_titulo((self.titulo_h1 or self.titulo_head).strip())
         texto = "".join(self.partes)
         # normaliza espaços dentro de cada linha e colapsa linhas vazias
         linhas = [re.sub(r"[ \t]+", " ", l).strip() for l in texto.split("\n")]
         paragrafos = [l for l in linhas if l]
-        # o <h1> foi apanhado como texto: se a 1.ª linha for o título, remove-a
-        # (o renderizador do ZIM já mostra o título por cima do corpo)
-        if paragrafos and titulo and paragrafos[0].strip() == titulo:
-            paragrafos = paragrafos[1:]
+        # limpeza das primeiras linhas: o <h1> foi apanhado como texto e há
+        # muitas vezes uma migalha de pão ("Conteúdo TYATT · Ciência") ou o
+        # próprio título repetido antes do corpo. O renderizador do ZIM já
+        # mostra o título por cima, por isso removemo-los do topo do corpo.
+        alvo = _normalizar_cmp(titulo)
+        removidos = 0
+        while paragrafos and len(paragrafos) > 1 and removidos < 3:
+            linha, cabeca = paragrafos[0], _normalizar_cmp(paragrafos[0])
+            eh_titulo = cabeca == alvo
+            eh_migalha = "conteudo tyatt" in cabeca or (
+                len(linha) < 60 and cabeca.endswith(alvo)
+                and any(sep in linha for sep in ("·", " / ", ">")))
+            if eh_titulo or eh_migalha:
+                paragrafos.pop(0)
+                removidos += 1
+            else:
+                break
         corpo = "\n".join(paragrafos)
         return titulo, corpo
+
+
+def _normalizar_cmp(s):
+    """Forma comparável de um texto: sem acentos, minúsculas, sem símbolos."""
+    s = unicodedata.normalize("NFD", s.lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    return re.sub(r"[^a-z0-9]+", " ", s).strip()
+
+
+def _limpar_titulo(t):
+    """Remove emoji/símbolos e espaços do início e fim de um título, para que
+    «🏛️ 4.ª Classe — História» fique «4.ª Classe — História»."""
+    t = t.strip()
+    # tira qualquer sequência inicial que não seja letra/número (emoji, ·, -)
+    t = re.sub(r"^[^\w(«\"]+", "", t, flags=re.UNICODE).strip()
+    return re.sub(r"\s+", " ", t)
 
 
 def _slug(texto):
@@ -150,6 +179,7 @@ def importar(pasta, categoria):
             # usa a 1.ª linha do corpo como título, em último recurso
             primeira = corpo.split("\n", 1)[0] if corpo else ""
             titulo = primeira[:80].strip()
+        titulo = _limpar_titulo(titulo)   # também os títulos de recurso
         if not titulo:
             saltados["sem_titulo"] += 1
             print(f"SALTADO (sem título): {f.name}")
